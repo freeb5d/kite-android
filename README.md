@@ -30,6 +30,14 @@ TV box running Android 7.0 or newer. No need to pick the right file.
 
 Kite checks GitHub for new versions on launch and can update itself in one tap.
 
+## 📸 Screenshots
+
+<p align="center">
+  <img src=".github/screenshots/light.jpg" width="280" alt="Light theme">
+  &nbsp;&nbsp;
+  <img src=".github/screenshots/dark.jpg" width="280" alt="Dark theme">
+</p>
+
 ## ✨ Features
 
 - **All common link types** — `vmess://`, `vless://`, `trojan://`, `ss://`. Paste one link, or
