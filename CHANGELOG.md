@@ -1,5 +1,10 @@
 # Changelog
 
+## 🎨 v0.5.1 — New app icon and TV banner
+
+- Sharper, full-size app icon that fills the launcher shape on every phone.
+- New Android TV home-screen banner with the Kite logo and name.
+
 ## 📺 v0.5.0 — Send configs from phone to TV
 
 - **Send to TV** — on Android TV, tap the new QR button to show a code. On your phone,
