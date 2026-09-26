@@ -94,7 +94,12 @@ class _HomePageState extends State<HomePage> {
   String error = '';
   final expanded = <String>{};
   final syncing = <String>{};
-  final pings = <String, int>{};
+  // id -> ms (-1 = failed); remembered across restarts until the next test.
+  final pings = <String, int>{
+    for (final e in (jsonDecode(Store.getString('pings') ?? '{}') as Map).entries) '${e.key}': (e.value as num).toInt(),
+  };
+  bool sortByDelay = Store.getBool('sortByDelay');
+  bool cancelPing = false;
   bool pinging = false;
   String pingMode = Store.getString('pingMode') ?? 'tcp';
   Map<String, dynamic> info = {};
@@ -176,7 +181,13 @@ class _HomePageState extends State<HomePage> {
       });
       g.servers.add(s);
     }
-    return (standalone, groups.values.toList());
+    for (final g in groups.values) {
+      final sorted = _byDelay(g.servers);
+      g.servers
+        ..clear()
+        ..addAll(sorted);
+    }
+    return (_byDelay(standalone), groups.values.toList());
   }
 
   // ---------- adding servers ----------
@@ -407,16 +418,23 @@ class _HomePageState extends State<HomePage> {
     setState(() {});
   }
 
-  Future<void> _pingAll() async {
+  void _savePings() => Store.setString('pings', jsonEncode(pings));
+
+  /// Tests [list] (all servers, or one subscription group) with [pingMode].
+  Future<void> _ping(List<Server> list) async {
+    if (list.isEmpty) return;
     setState(() {
       pinging = true;
-      pings.clear();
+      cancelPing = false;
+      for (final s in list) {
+        pings.remove('${s['id']}');
+      }
     });
     // Real delay starts an xray-core instance per server, so keep it gentle.
-    final queue = [...servers];
+    final queue = [...list];
     final workers = pingMode == 'real' ? 4 : 16;
     Future<void> worker() async {
-      while (queue.isNotEmpty) {
+      while (queue.isNotEmpty && !cancelPing) {
         final s = queue.removeAt(0);
         int ms;
         try {
@@ -429,7 +447,41 @@ class _HomePageState extends State<HomePage> {
     }
 
     await Future.wait(List.generate(workers, (_) => worker()));
+    _savePings();
     if (mounted) setState(() => pinging = false);
+  }
+
+  Future<void> _removeFailed() async {
+    final failed = servers.where((s) => pings['${s['id']}'] == -1).toList();
+    if (failed.isEmpty) return;
+    final ok = await showDialog<bool>(
+      context: context,
+      builder: (ctx) => AlertDialog(
+        content: Text(t('removeFailedConfirm', [failed.length])),
+        actions: [
+          TextButton(onPressed: () => Navigator.pop(ctx, false), child: Text(t('cancel'))),
+          FilledButton(autofocus: true, onPressed: () => Navigator.pop(ctx, true), child: Text(t('remove'))),
+        ],
+      ),
+    );
+    if (ok != true) return;
+    final gone = failed.map((s) => s['id']).toSet();
+    servers.removeWhere((s) => gone.contains(s['id']));
+    if (gone.contains(selectedId)) selectedId = null;
+    await _save();
+    setState(() {});
+  }
+
+  /// Fastest first, failed last, untested in between (v2rayNG's order).
+  List<Server> _byDelay(List<Server> list) {
+    if (!sortByDelay) return list;
+    int rank(Server s) {
+      final v = pings['${s['id']}'];
+      if (v == null) return 1000000000;
+      return v < 0 ? 2000000000 : v;
+    }
+
+    return [...list]..sort((a, b) => rank(a).compareTo(rank(b)));
   }
 
   Widget _pingBar() => Padding(
@@ -452,17 +504,45 @@ class _HomePageState extends State<HomePage> {
                         pingMode = v.first;
                         pings.clear();
                       });
+                      _savePings();
                       Store.setString('pingMode', pingMode);
                     },
             ),
           ),
           const SizedBox(width: 8),
-          FilledButton.tonalIcon(
-            onPressed: pinging || servers.isEmpty ? null : _pingAll,
-            icon: pinging
-                ? const SizedBox(width: 16, height: 16, child: CircularProgressIndicator(strokeWidth: 2))
-                : const Icon(Icons.network_ping, size: 18),
-            label: Text(pinging ? t('pinging') : t('ping')),
+          pinging
+              ? OutlinedButton.icon(
+                  onPressed: () => setState(() => cancelPing = true),
+                  icon: const SizedBox(width: 16, height: 16, child: CircularProgressIndicator(strokeWidth: 2)),
+                  label: Text(t('stop')),
+                )
+              : FilledButton.tonalIcon(
+                  onPressed: servers.isEmpty ? null : () => _ping(servers),
+                  icon: const Icon(Icons.network_ping, size: 18),
+                  label: Text(t('ping')),
+                ),
+          PopupMenuButton<String>(
+            tooltip: t('more'),
+            onSelected: (v) {
+              if (v == 'sort') {
+                setState(() => sortByDelay = !sortByDelay);
+                Store.setBool('sortByDelay', sortByDelay);
+              }
+              if (v == 'removeFailed') _removeFailed();
+              if (v == 'clear') {
+                setState(pings.clear);
+                _savePings();
+              }
+            },
+            itemBuilder: (_) => [
+              CheckedPopupMenuItem(value: 'sort', checked: sortByDelay, child: Text(t('sortByDelay'))),
+              PopupMenuItem(
+                value: 'removeFailed',
+                enabled: !pinging && servers.any((s) => pings['${s['id']}'] == -1),
+                child: Text(t('removeFailed')),
+              ),
+              PopupMenuItem(value: 'clear', child: Text(t('clearResults'))),
+            ],
           ),
         ]),
       );
@@ -780,16 +860,21 @@ class _HomePageState extends State<HomePage> {
                     : const Icon(Icons.sync),
               ),
               PopupMenuButton<String>(
-                tooltip: t('share'),
-                icon: const Icon(Icons.share_outlined),
-                onSelected: (v) => _shareGroup(g, v == 'url'),
+                onSelected: (v) {
+                  if (v == 'ping') _ping(g.servers);
+                  if (v == 'url') _shareGroup(g, true);
+                  if (v == 'links') _shareGroup(g, false);
+                  if (v == 'edit') _editGroup(g);
+                  if (v == 'delete') _deleteGroup(g);
+                },
                 itemBuilder: (_) => [
+                  PopupMenuItem(value: 'ping', enabled: !pinging, child: Text(t('pingGroup'))),
                   PopupMenuItem(value: 'url', child: Text(t('copySubscriptionUrl'))),
                   PopupMenuItem(value: 'links', child: Text(t('copyAllServerLinks'))),
+                  PopupMenuItem(value: 'edit', child: Text(t('edit'))),
+                  PopupMenuItem(value: 'delete', child: Text(t('remove'))),
                 ],
               ),
-              IconButton(tooltip: t('edit'), icon: const Icon(Icons.edit_outlined), onPressed: () => _editGroup(g)),
-              IconButton(tooltip: t('remove'), icon: const Icon(Icons.delete_outline), onPressed: () => _deleteGroup(g)),
             ]),
           ),
           if (u != null && (used > 0 || total > 0 || expire > 0))

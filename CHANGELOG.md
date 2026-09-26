@@ -1,5 +1,18 @@
 # Changelog
 
+## ✨ v0.3.0 — v2rayNG-style ping: sort, remove failed, test one group
+
+Ping now works like v2rayNG:
+
+- **Sort by delay** — fastest servers first, failed ones last (in the **⋮** menu next to Ping).
+- **Remove failed servers** — deletes every server that failed the last test, after asking.
+- **Test one subscription** — ping just that group instead of everything.
+- **Stop** — cancel a test that's running.
+- **Results are remembered** — delays stay visible after restarting, until the next test.
+- **Clear results** from the same menu.
+- Subscription rows keep **sync** visible and move share/edit/delete/test into a **⋮** menu,
+  so long subscription names fit on phones.
+
 ## ✨ v0.2.0 — Kite icon and ping modes
 
 - **New app icon** — the Kite logo, as an adaptive icon that fits every launcher shape.
