@@ -34,11 +34,29 @@ class _KiteAppState extends State<KiteApp> {
   String lang = Store.getString('lang') ?? 'en';
   bool dark = Store.getBool('dark', fallback: true);
 
-  ThemeData _theme(Brightness b) => ThemeData(
-        useMaterial3: true,
-        fontFamily: lang == 'fa' ? 'Vazirmatn' : null,
-        colorScheme: ColorScheme.fromSeed(seedColor: accent, brightness: b),
-      );
+  ThemeData _theme(Brightness b) {
+    final scheme = ColorScheme.fromSeed(seedColor: accent, brightness: b);
+    // Remote-control (D-pad) navigation: make the focused control obvious
+    // with a strong tint and a thick outline.
+    final focusTint = scheme.primary.withValues(alpha: 0.35);
+    final focusRing = BorderSide(color: scheme.tertiary, width: 3);
+    final focusStyle = ButtonStyle(
+      overlayColor: WidgetStateProperty.resolveWith((s) => s.contains(WidgetState.focused) ? focusTint : null),
+      side: WidgetStateProperty.resolveWith((s) => s.contains(WidgetState.focused) ? focusRing : null),
+    );
+    return ThemeData(
+      useMaterial3: true,
+      fontFamily: lang == 'fa' ? 'Vazirmatn' : null,
+      colorScheme: scheme,
+      focusColor: focusTint,
+      filledButtonTheme: FilledButtonThemeData(style: focusStyle),
+      textButtonTheme: TextButtonThemeData(style: focusStyle),
+      outlinedButtonTheme: OutlinedButtonThemeData(style: focusStyle),
+      iconButtonTheme: IconButtonThemeData(style: focusStyle),
+      segmentedButtonTheme: SegmentedButtonThemeData(style: focusStyle),
+      listTileTheme: ListTileThemeData(selectedTileColor: focusTint),
+    );
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -1082,10 +1100,8 @@ class _HomePageState extends State<HomePage> {
           autofocus: autofocus,
           style: FilledButton.styleFrom(
             shape: const CircleBorder(),
-            backgroundColor: running ? const Color(0xFF3DD68C) : scheme.surfaceContainerHighest,
-            foregroundColor: running ? Colors.white : scheme.onSurfaceVariant,
-            elevation: running ? 6 : 0,
-            shadowColor: const Color(0xFF3DD68C),
+            backgroundColor: running ? scheme.primary : scheme.surfaceContainerHighest,
+            foregroundColor: running ? scheme.onPrimary : scheme.onSurfaceVariant,
           ),
           onPressed: (s == null && !running) ? null : _toggle,
           child: starting ? const CircularProgressIndicator() : const Icon(Icons.power_settings_new, size: 56),

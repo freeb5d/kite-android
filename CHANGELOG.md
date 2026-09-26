@@ -1,5 +1,11 @@
 # Changelog
 
+## 📺 v0.5.3 — Clearer focus on Android TV
+
+- The control selected with the remote is now clearly highlighted with a strong tint and a
+  bright outline, so it's easy to see where you are on the TV.
+- The connect button is back to the Kite blue while connected.
+
 ## 🟢 v0.5.2 — Green connect button
 
 - The connect button turns a soft green with a gentle glow while connected.
