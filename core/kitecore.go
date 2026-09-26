@@ -32,6 +32,8 @@ import (
 	"github.com/freeb5d/kite/pkg/probe"
 	"github.com/freeb5d/kite/pkg/profile"
 	"github.com/freeb5d/kite/pkg/xrayconf"
+
+	"golang.org/x/sys/unix"
 )
 
 // Local proxy ports while connected (both modes), so other apps can use
@@ -157,6 +159,16 @@ func Start(serverJSON string, tunFd int, logPath string) error {
 		return errors.New("already connected")
 	}
 
+	if tunFd >= 0 {
+		tunFds = append(tunFds, tunFd)
+	}
+	started := false
+	defer func() {
+		if !started {
+			releaseTun()
+		}
+	}()
+
 	var s profile.Server
 	if err := json.Unmarshal([]byte(serverJSON), &s); err != nil {
 		return err
@@ -187,6 +199,7 @@ func Start(serverJSON string, tunFd int, logPath string) error {
 		return err
 	}
 	instance = inst
+	started = true
 	upCount, dnCount = nil, nil
 	if sm, ok := inst.GetFeature(stats.ManagerType()).(stats.Manager); ok && sm != nil {
 		upCount = counter(sm, "outbound>>>proxy>>>traffic>>>uplink")
@@ -204,7 +217,32 @@ func Stop() error {
 	}
 	err := instance.Close()
 	instance, upCount, dnCount = nil, nil, nil
+	releaseTun()
 	return err
+}
+
+// tunFds are VpnService fds handed to xray-core. It never closes them and
+// its packet goroutines may outlive Close, so instead of closing (which
+// frees the number for reuse, e.g. by the next log file) each is replaced
+// in place by /dev/null: the tunnel is released, stray writes vanish, and
+// reads hit EOF so the goroutines exit.
+var tunFds []int
+
+func releaseTun() {
+	if len(tunFds) == 0 {
+		return
+	}
+	null, err := unix.Open("/dev/null", unix.O_RDWR|unix.O_CLOEXEC, 0)
+	for _, fd := range tunFds {
+		if err == nil && unix.Dup3(null, fd, unix.O_CLOEXEC) == nil {
+			continue
+		}
+		_ = unix.Close(fd)
+	}
+	if err == nil {
+		_ = unix.Close(null)
+	}
+	tunFds = nil
 }
 
 // IsRunning reports whether xray-core is running.

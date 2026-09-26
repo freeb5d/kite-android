@@ -16,6 +16,7 @@
 
     <application
         android:label="Kite"
+        android:usesCleartextTraffic="true"
         android:name="${applicationName}"
         android:icon="@mipmap/ic_launcher"
         android:banner="@drawable/tv_banner">

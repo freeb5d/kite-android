@@ -1,5 +1,16 @@
 # Changelog
 
+## 📺 v0.5.0 — Send configs from phone to TV
+
+- **Send to TV** — on Android TV, tap the new QR button to show a code. On your phone,
+  choose **Send to TV** from any server or subscription menu and scan it: the config
+  arrives on the TV over your local Wi-Fi, no typing needed. Scanning the code with a
+  normal camera app opens a small page where links can be pasted too.
+- **More accurate TCP / HTTP ping** — the server's hostname is resolved before timing,
+  and TCP ping takes the best of two handshakes, so values match the real network path.
+- Fixed the connection log sometimes filling with binary data after reconnecting in VPN
+  mode.
+
 ## 🔤 v0.4.2 — Vazirmatn font for Persian
 
 - Persian now uses the **Vazirmatn** font across the whole app for clearer, more natural text.

@@ -9,6 +9,7 @@ import 'about.dart';
 import 'core.dart';
 import 'editor.dart';
 import 'i18n.dart';
+import 'lan_share.dart';
 import 'scan.dart';
 import 'store.dart';
 
@@ -248,13 +249,20 @@ class _HomePageState extends State<HomePage> {
     await _addFromText(value);
   }
 
-  Future<void> _addFromText(String value) async {
+  /// Adds a subscription URL or one or more share links. Returns how many
+  /// servers were added; with [rethrowErrors] failures propagate instead of
+  /// showing in the error box.
+  Future<int> _addFromText(String value, {bool rethrowErrors = false}) async {
     setState(() => error = '');
+    if (isReceiveUrl(value)) {
+      _flash(t('tvCodeHint'));
+      return 0;
+    }
     try {
       if (RegExp(r'^https?://', caseSensitive: false).hasMatch(value)) {
         final added = await _importSubscription(value, newId());
         if (added.isNotEmpty) _select('${added.last['id']}');
-        return;
+        return added.length;
       }
       // Several links pasted at once: add each one.
       final lines = value.split(RegExp(r'\s+')).where((l) => l.contains('://')).toList();
@@ -268,10 +276,46 @@ class _HomePageState extends State<HomePage> {
       await _save();
       setState(() {});
       if (last != null) _select('${last['id']}');
+      return lines.length;
     } catch (e) {
+      if (rethrowErrors) rethrow;
       setState(() => error = _err(e));
+      return 0;
     }
   }
+
+  /// Phone side: scan the TV's code and post [text] to it.
+  Future<void> _sendToTv(Future<String> Function() text) async {
+    final code = await Navigator.of(context).push<String>(
+      MaterialPageRoute(builder: (_) => ScanPage(title: t('sendToTv'), hint: t('scanTvQr'))),
+    );
+    if (code == null || !mounted) return;
+    if (!isReceiveUrl(code)) {
+      _flash(t('scanTvQr'));
+      return;
+    }
+    try {
+      await sendToReceiver(code, await text());
+      _flash(t('sentToTv'));
+    } catch (_) {
+      setState(() => error = t('tvUnreachable'));
+    }
+  }
+
+  Future<String> _groupLinks(_Group g) async {
+    if (g.url.isNotEmpty) return g.url;
+    final links = <String>[];
+    for (final s in g.servers) {
+      links.add(await Core.shareLink(s));
+    }
+    return links.join('
+');
+  }
+
+  /// TV side: show a QR code and accept configs from a phone on the LAN.
+  Future<void> _receiveFromPhone() => Navigator.of(context).push(MaterialPageRoute(
+        builder: (_) => ReceivePage(t: t, onReceive: (text) => _addFromText(text, rethrowErrors: true)),
+      ));
 
   /// Fetches a subscription and replaces the group's servers only after a
   /// successful fetch, so a failed sync never loses servers.
@@ -848,6 +892,8 @@ class _HomePageState extends State<HomePage> {
           title: const Text('Kite'),
           actions: [
             IconButton(tooltip: t('addServer'), icon: const Icon(Icons.add), onPressed: _addDialog),
+            if (info['isTv'] == true)
+              IconButton(tooltip: t('receiveFromPhone'), icon: const Icon(Icons.qr_code_2), onPressed: _receiveFromPhone),
             IconButton(tooltip: t('showLog'), icon: const Icon(Icons.terminal), onPressed: _showLog),
             IconButton(tooltip: t('language'), icon: const Icon(Icons.translate), onPressed: _pickLanguage),
             IconButton(
@@ -915,11 +961,13 @@ class _HomePageState extends State<HomePage> {
           PopupMenuButton<String>(
             onSelected: (v) {
               if (v == 'share') _shareServer(s);
+              if (v == 'tv') _sendToTv(() => Core.shareLink(s));
               if (v == 'rename') _editServer(s);
               if (v == 'delete') _deleteServer(s);
             },
             itemBuilder: (_) => [
               PopupMenuItem(value: 'share', child: Text(t('shareLink'))),
+              if (info['isTv'] != true) PopupMenuItem(value: 'tv', child: Text(t('sendToTv'))),
               PopupMenuItem(value: 'rename', child: Text(t('editServer'))),
               PopupMenuItem(value: 'delete', child: Text(t('remove'))),
             ],
@@ -960,6 +1008,7 @@ class _HomePageState extends State<HomePage> {
                   if (v == 'ping') _ping(g.servers);
                   if (v == 'url') _shareGroup(g, true);
                   if (v == 'links') _shareGroup(g, false);
+                  if (v == 'tv') _sendToTv(() => _groupLinks(g));
                   if (v == 'edit') _editGroup(g);
                   if (v == 'delete') _deleteGroup(g);
                 },
@@ -967,6 +1016,7 @@ class _HomePageState extends State<HomePage> {
                   PopupMenuItem(value: 'ping', enabled: !pinging, child: Text(t('pingGroup'))),
                   PopupMenuItem(value: 'url', child: Text(t('copySubscriptionUrl'))),
                   PopupMenuItem(value: 'links', child: Text(t('copyAllServerLinks'))),
+                  if (info['isTv'] != true) PopupMenuItem(value: 'tv', child: Text(t('sendToTv'))),
                   PopupMenuItem(value: 'edit', child: Text(t('edit'))),
                   PopupMenuItem(value: 'delete', child: Text(t('remove'))),
                 ],

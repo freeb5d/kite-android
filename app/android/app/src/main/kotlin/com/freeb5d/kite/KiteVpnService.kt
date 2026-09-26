@@ -96,8 +96,10 @@ class KiteVpnService : VpnService() {
                         // its DNS lookups) must not loop back into the tunnel.
                         .addDisallowedApplication(packageName)
                         .establish() ?: throw IllegalStateException("VPN permission was revoked")
-                    tun = pfd
-                    fd = pfd.fd.toLong()
+                    // The Go core owns the fd from here and releases it on stop;
+                    // closing it here too could free a number that xray-core
+                    // still writes packets to (e.g. into the next log file).
+                    fd = pfd.detachFd().toLong()
                 }
                 Kitecore.start(server, fd, log.absolutePath)
                 publish(mapOf("state" to "running", "server" to name, "mode" to mode))
