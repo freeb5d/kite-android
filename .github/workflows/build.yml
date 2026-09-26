@@ -1,0 +1,101 @@
+# Builds the Go core for every Android CPU type (arm64, armv7, x86_64, x86)
+# with gomobile, then one universal signed APK that installs on any phone or
+# TV. Pushing a v* tag publishes it as a GitHub Release.
+name: Build
+
+on:
+  push:
+    tags: ["v*"]
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-go@v5
+        with:
+          go-version: "1.27"
+          cache-dependency-path: core/go.sum
+
+      - uses: actions/setup-java@v4
+        with:
+          distribution: temurin
+          java-version: "17"
+
+      - uses: android-actions/setup-android@v3
+
+      - name: Install Android NDK
+        run: |
+          sdkmanager --install "ndk;27.2.12479018"
+          echo "ANDROID_NDK_HOME=$ANDROID_SDK_ROOT/ndk/27.2.12479018" >> $GITHUB_ENV
+
+      - name: Build Go core (gomobile)
+        working-directory: core
+        run: |
+          go install golang.org/x/mobile/cmd/gomobile@latest
+          go install golang.org/x/mobile/cmd/gobind@latest
+          gomobile init
+          go get github.com/freeb5d/kite@main
+          go get golang.org/x/mobile/bind@latest
+          go mod tidy
+          mkdir -p ../app/android/app/libs
+          gomobile bind -v -target=android -androidapi 21 -ldflags="-s -w -checklinkname=0" -trimpath \
+            -o ../app/android/app/libs/kitecore.aar .
+
+      - uses: subosito/flutter-action@v2
+        with:
+          channel: stable
+          cache: true
+
+      - name: Determine version
+        id: version
+        run: |
+          if [[ "$GITHUB_REF" == refs/tags/v* ]]; then
+            V="${GITHUB_REF_NAME#v}"
+          else
+            V="0.0.0"
+          fi
+          echo "name=$V" >> $GITHUB_OUTPUT
+          echo "code=$GITHUB_RUN_NUMBER" >> $GITHUB_OUTPUT
+
+      - name: Build universal APK
+        working-directory: app
+        env:
+          KEYSTORE_B64: ${{ secrets.KEYSTORE_B64 }}
+          KEYSTORE_PASSWORD: ${{ secrets.KEYSTORE_PASSWORD }}
+          KEY_ALIAS: ${{ secrets.KEY_ALIAS }}
+        run: |
+          flutter pub get
+          flutter build apk --release \
+            --build-name=${{ steps.version.outputs.name }} \
+            --build-number=${{ steps.version.outputs.code }}
+          cp build/app/outputs/flutter-apk/app-release.apk ../kite-android-universal.apk
+          ls -la ../kite-android-universal.apk
+
+      - uses: actions/upload-artifact@v4
+        with:
+          name: kite-android-universal.apk
+          path: kite-android-universal.apk
+
+      - name: Extract changelog section
+        if: startsWith(github.ref, 'refs/tags/')
+        run: |
+          version="${GITHUB_REF_NAME#v}"
+          awk -v ver="$version" '
+            BEGIN { found = 0 }
+            /^## / { if (found) exit; if ($0 ~ "## .* v" ver "( |$)") { found = 1; next } next }
+            found { print }
+          ' CHANGELOG.md > release-notes.md
+          [ -s release-notes.md ] || echo "Kite for Android ${GITHUB_REF_NAME}" > release-notes.md
+
+      - name: Publish release
+        if: startsWith(github.ref, 'refs/tags/')
+        uses: softprops/action-gh-release@v2
+        with:
+          files: kite-android-universal.apk
+          body_path: release-notes.md
