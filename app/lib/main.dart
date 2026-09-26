@@ -5,6 +5,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:http/http.dart' as http;
 
+import 'about.dart';
 import 'core.dart';
 import 'i18n.dart';
 import 'store.dart';
@@ -559,36 +560,9 @@ class _HomePageState extends State<HomePage> {
   }
 
   Future<void> _showAbout() async {
-    await showDialog<void>(
-      context: context,
-      builder: (ctx) => AlertDialog(
-        title: const Text('Kite'),
-        content: SizedBox(
-          width: 420,
-          child: SingleChildScrollView(
-            child: Column(mainAxisSize: MainAxisSize.min, crossAxisAlignment: CrossAxisAlignment.start, children: [
-              Text('v${info['version'] ?? '?'} · xray-core ${info['core'] ?? '?'}', style: Theme.of(ctx).textTheme.bodySmall),
-              const SizedBox(height: 12),
-              Text(t('aboutDescription')),
-              const SizedBox(height: 16),
-              ListTile(
-                contentPadding: EdgeInsets.zero,
-                leading: const Icon(Icons.shield_outlined),
-                title: Text(t('alwaysOnVpn')),
-                subtitle: Text(t('alwaysOnVpnHint')),
-                onTap: Core.openAlwaysOnSettings,
-              ),
-            ]),
-          ),
-        ),
-        actions: [
-          TextButton(onPressed: () => Core.openUrl(repoUrl), child: Text(t('repository'))),
-          TextButton(onPressed: () => Core.openUrl('$repoUrl/issues'), child: Text(t('reportIssue'))),
-          TextButton(onPressed: () => _checkUpdate(), child: Text(t('checkForUpdates'))),
-          FilledButton(autofocus: true, onPressed: () => Navigator.pop(ctx), child: Text(t('close'))),
-        ],
-      ),
-    );
+    await Navigator.of(context).push(MaterialPageRoute<void>(
+      builder: (_) => AboutPage(info: info, t: t, onCheckUpdate: () => _checkUpdate()),
+    ));
   }
 
   Future<void> _pickLanguage() async {

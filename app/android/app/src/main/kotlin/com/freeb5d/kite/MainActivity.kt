@@ -51,7 +51,9 @@ class MainActivity : FlutterActivity() {
         EventChannel(messenger, "kite/status").setStreamHandler(object : EventChannel.StreamHandler {
             private var listener: ((Map<String, Any?>) -> Unit)? = null
             override fun onListen(arguments: Any?, events: EventChannel.EventSink) {
-                listener = { events.success(it) }.also { KiteVpnService.addListener(it) }
+                val l: (Map<String, Any?>) -> Unit = { status -> events.success(status) }
+                listener = l
+                KiteVpnService.addListener(l)
             }
 
             override fun onCancel(arguments: Any?) {
