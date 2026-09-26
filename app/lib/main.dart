@@ -308,8 +308,7 @@ class _HomePageState extends State<HomePage> {
     for (final s in g.servers) {
       links.add(await Core.shareLink(s));
     }
-    return links.join('
-');
+    return links.join('\n');
   }
 
   /// TV side: show a QR code and accept configs from a phone on the LAN.
