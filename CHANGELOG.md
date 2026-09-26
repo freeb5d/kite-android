@@ -1,5 +1,13 @@
 # Changelog
 
+## 🐛 v0.1.1 — Support VLESS post-quantum encryption
+
+- Servers using xray-core's new VLESS encryption (`encryption=mlkem768x25519plus...`)
+  connected but passed no traffic (the connection test failed with `EOF`): Kite always sent
+  `encryption: none`. The link's value is now used.
+- Log screen: **Errors only** view (opens by default when there are errors) and a **Copy**
+  button, so the log can be shared easily.
+
 ## 🎉 v0.1.0 — First Android & Android TV release
 
 - One universal APK for every phone, tablet and Android TV (ARM 32/64-bit, x86/x86_64).

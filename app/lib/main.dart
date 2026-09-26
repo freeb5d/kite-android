@@ -541,20 +541,43 @@ class _HomePageState extends State<HomePage> {
   Future<void> _showLog() async {
     final log = await Core.log();
     if (!mounted) return;
+    final problems = log
+        .split('\n')
+        .where((l) => RegExp(r'\[(Warning|Error)\]|failed|rejected|timeout|EOF', caseSensitive: false).hasMatch(l))
+        .join('\n');
+    var errorsOnly = problems.isNotEmpty;
     await showDialog<void>(
       context: context,
-      builder: (ctx) => AlertDialog(
-        title: Text(t('showLog')),
-        content: SizedBox(
-          width: 720,
-          height: 420,
-          child: SingleChildScrollView(
-            reverse: true,
-            child: SelectableText(log.isEmpty ? t('logEmpty') : log,
-                style: const TextStyle(fontFamily: 'monospace', fontSize: 11)),
-          ),
-        ),
-        actions: [TextButton(autofocus: true, onPressed: () => Navigator.pop(ctx), child: Text(t('close')))],
+      builder: (ctx) => StatefulBuilder(
+        builder: (ctx, setLocal) {
+          final shown = errorsOnly ? problems : log;
+          return AlertDialog(
+            title: Text(t('showLog')),
+            content: SizedBox(
+              width: 720,
+              height: 420,
+              child: SingleChildScrollView(
+                reverse: true,
+                child: SelectableText(shown.isEmpty ? t('logEmpty') : shown,
+                    style: const TextStyle(fontFamily: 'monospace', fontSize: 11)),
+              ),
+            ),
+            actions: [
+              TextButton(
+                onPressed: () => setLocal(() => errorsOnly = !errorsOnly),
+                child: Text(errorsOnly ? t('showAllLog') : t('errorsOnly')),
+              ),
+              TextButton(
+                onPressed: () async {
+                  await Clipboard.setData(ClipboardData(text: shown));
+                  _flash(t('logCopied'));
+                },
+                child: Text(t('copyLog')),
+              ),
+              FilledButton(autofocus: true, onPressed: () => Navigator.pop(ctx), child: Text(t('close'))),
+            ],
+          );
+        },
       ),
     );
   }

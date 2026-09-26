@@ -14,6 +14,10 @@ const languages = <(String, String)>[
 
 const Map<String, Map<String, String>> _strings = {
   "en": {
+    "errorsOnly": "Errors only",
+    "showAllLog": "Full log",
+    "copyLog": "Copy",
+    "logCopied": "Log copied",
     "appVersion": "App version",
     "engineLabel": "Engine",
     "device": "Device",
@@ -105,6 +109,10 @@ const Map<String, Map<String, String>> _strings = {
     "skippedEntries": "Imported {0} servers ({1} unsupported entries skipped).",
   },
   "zh": {
+    "errorsOnly": "仅错误",
+    "showAllLog": "完整日志",
+    "copyLog": "复制",
+    "logCopied": "日志已复制",
     "appVersion": "应用版本",
     "engineLabel": "引擎",
     "device": "设备",
@@ -196,6 +204,10 @@ const Map<String, Map<String, String>> _strings = {
     "skippedEntries": "已导入 {0} 个服务器（跳过 {1} 个不支持的条目）。",
   },
   "fa": {
+    "errorsOnly": "فقط خطاها",
+    "showAllLog": "لاگ کامل",
+    "copyLog": "کپی",
+    "logCopied": "لاگ کپی شد",
     "appVersion": "نسخه‌ی برنامه",
     "engineLabel": "موتور",
     "device": "دستگاه",
@@ -287,6 +299,10 @@ const Map<String, Map<String, String>> _strings = {
     "skippedEntries": "{0} سرور وارد شد ({1} مورد پشتیبانی‌نشده رد شد).",
   },
   "tr": {
+    "errorsOnly": "Yalnızca hatalar",
+    "showAllLog": "Tam günlük",
+    "copyLog": "Kopyala",
+    "logCopied": "Günlük kopyalandı",
     "appVersion": "Uygulama sürümü",
     "engineLabel": "Motor",
     "device": "Cihaz",
@@ -378,6 +394,10 @@ const Map<String, Map<String, String>> _strings = {
     "skippedEntries": "{0} sunucu içe aktarıldı ({1} desteklenmeyen girdi atlandı).",
   },
   "ar": {
+    "errorsOnly": "الأخطاء فقط",
+    "showAllLog": "السجل الكامل",
+    "copyLog": "نسخ",
+    "logCopied": "تم نسخ السجل",
     "appVersion": "إصدار التطبيق",
     "engineLabel": "المحرك",
     "device": "الجهاز",
@@ -469,6 +489,10 @@ const Map<String, Map<String, String>> _strings = {
     "skippedEntries": "تم استيراد {0} خوادم (تم تخطي {1} إدخالات غير مدعومة).",
   },
   "fr": {
+    "errorsOnly": "Erreurs seulement",
+    "showAllLog": "Journal complet",
+    "copyLog": "Copier",
+    "logCopied": "Journal copié",
     "appVersion": "Version de l'app",
     "engineLabel": "Moteur",
     "device": "Appareil",
@@ -560,6 +584,10 @@ const Map<String, Map<String, String>> _strings = {
     "skippedEntries": "{0} serveurs importés ({1} entrées non prises en charge ignorées).",
   },
   "de": {
+    "errorsOnly": "Nur Fehler",
+    "showAllLog": "Ganzes Protokoll",
+    "copyLog": "Kopieren",
+    "logCopied": "Protokoll kopiert",
     "appVersion": "App-Version",
     "engineLabel": "Engine",
     "device": "Gerät",
@@ -651,6 +679,10 @@ const Map<String, Map<String, String>> _strings = {
     "skippedEntries": "{0} Server importiert ({1} nicht unterstützte Einträge übersprungen).",
   },
   "ru": {
+    "errorsOnly": "Только ошибки",
+    "showAllLog": "Весь журнал",
+    "copyLog": "Копировать",
+    "logCopied": "Журнал скопирован",
     "appVersion": "Версия приложения",
     "engineLabel": "Движок",
     "device": "Устройство",
