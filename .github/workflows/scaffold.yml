@@ -1,0 +1,33 @@
+# One-off: generates the standard Flutter project skeleton (Gradle files,
+# Android host app) with the current stable Flutter and commits it, so the
+# project doesn't need Flutter installed locally.
+name: Scaffold
+
+on:
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+jobs:
+  scaffold:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: subosito/flutter-action@v2
+        with:
+          channel: stable
+
+      - name: flutter create
+        run: |
+          flutter create --org com.freeb5d --project-name kite --platforms android --android-language kotlin app
+          flutter --version > app/FLUTTER_VERSION.txt
+
+      - name: Commit skeleton
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898283+github-actions[bot]@users.noreply.github.com"
+          git add app
+          git commit -m "Generate Flutter project skeleton"
+          git push
