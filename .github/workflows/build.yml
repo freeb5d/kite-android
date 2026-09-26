@@ -27,12 +27,11 @@ jobs:
           distribution: temurin
           java-version: "17"
 
-      - uses: android-actions/setup-android@v3
-
-      - name: Install Android NDK
+      # GitHub's Ubuntu runners ship the Android SDK and NDK preinstalled.
+      - name: Use preinstalled Android NDK
         run: |
-          sdkmanager --install "ndk;27.2.12479018"
-          echo "ANDROID_NDK_HOME=$ANDROID_SDK_ROOT/ndk/27.2.12479018" >> $GITHUB_ENV
+          echo "ANDROID_NDK_HOME=$ANDROID_NDK_LATEST_HOME" >> $GITHUB_ENV
+          echo "NDK: $ANDROID_NDK_LATEST_HOME"
 
       - name: Build Go core (gomobile)
         working-directory: core
