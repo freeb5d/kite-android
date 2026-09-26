@@ -1,5 +1,11 @@
 # Changelog
 
+## 🐛 v0.1.2 — VLESS encryption fix, for real this time
+
+v0.1.1 was accidentally built with the previous version of the shared desktop code (the Go
+module proxy returned a cached commit), so it didn't include the VLESS encryption fix. The
+core is now pinned to an exact desktop release (v0.12.2) so every build uses known code.
+
 ## 🐛 v0.1.1 — Support VLESS post-quantum encryption
 
 - Servers using xray-core's new VLESS encryption (`encryption=mlkem768x25519plus...`)

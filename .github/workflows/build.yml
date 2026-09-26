@@ -39,9 +39,9 @@ jobs:
           go install golang.org/x/mobile/cmd/gomobile@latest
           go install golang.org/x/mobile/cmd/gobind@latest
           gomobile init
-          go get github.com/freeb5d/kite@main
           go get golang.org/x/mobile/bind@latest
           go mod tidy
+          go list -m github.com/freeb5d/kite
           mkdir -p ../app/android/app/libs
           gomobile bind -v -target=android -androidapi 21 -ldflags="-s -w -checklinkname=0" -trimpath \
             -o ../app/android/app/libs/kitecore.aar .
