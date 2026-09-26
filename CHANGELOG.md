@@ -1,5 +1,11 @@
 # Changelog
 
+## ✨ v0.1.3 — Scan QR codes
+
+- The **+** dialog has a **Scan QR** button: point the camera at a server or subscription
+  QR code and it's added directly. Works offline, without Google Play services. Hidden on
+  TVs; the camera is optional, so the app still installs on devices without one.
+
 ## 🐛 v0.1.2 — VLESS encryption fix, for real this time
 
 v0.1.1 was accidentally built with the previous version of the shared desktop code (the Go

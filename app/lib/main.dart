@@ -8,6 +8,7 @@ import 'package:http/http.dart' as http;
 import 'about.dart';
 import 'core.dart';
 import 'i18n.dart';
+import 'scan.dart';
 import 'store.dart';
 
 const accent = Color(0xFF6366F1);
@@ -196,6 +197,17 @@ class _HomePageState extends State<HomePage> {
           ),
         ),
         actions: [
+          if (info['isTv'] != true)
+            TextButton.icon(
+              icon: const Icon(Icons.qr_code_scanner),
+              label: Text(t('scanQr')),
+              onPressed: () async {
+                final code = await Navigator.of(ctx).push<String>(
+                  MaterialPageRoute(builder: (_) => ScanPage(title: t('scanQr'), hint: t('scanQrHint'))),
+                );
+                if (code != null && ctx.mounted) Navigator.pop(ctx, code);
+              },
+            ),
           TextButton.icon(
             icon: const Icon(Icons.content_paste),
             label: Text(t('paste')),
