@@ -656,12 +656,56 @@ class _HomePageState extends State<HomePage> {
           ],
         ),
       );
-      if (go == true) {
-        _flash(t('downloadingUpdate'));
-        await Core.installApk('${apk['browser_download_url']}');
-      }
+      if (go == true && mounted) await _downloadUpdate('${apk['browser_download_url']}');
     } catch (e) {
       if (!silent && mounted) setState(() => error = t('updateFailed', [_err(e)]));
+    }
+  }
+
+  /// Downloads the new APK with a live progress dialog, then Android's
+  /// installer takes over.
+  Future<void> _downloadUpdate(String url) async {
+    final progress = ValueNotifier<(int, int)>((0, -1));
+    final sub = Core.updateProgress().listen((p) {
+      progress.value = ((p['downloaded'] as num).toInt(), (p['total'] as num).toInt());
+    });
+    final dialog = showDialog<void>(
+      context: context,
+      barrierDismissible: false,
+      builder: (ctx) => PopScope(
+        canPop: false,
+        child: AlertDialog(
+          title: Text(t('downloadingUpdate')),
+          content: ValueListenableBuilder<(int, int)>(
+            valueListenable: progress,
+            builder: (_, v, __) {
+              final (done, total) = v;
+              final frac = total > 0 ? done / total : null;
+              String mb(int b) => (b / 1048576).toStringAsFixed(1);
+              return Column(mainAxisSize: MainAxisSize.min, children: [
+                LinearProgressIndicator(value: frac),
+                const SizedBox(height: 12),
+                Row(children: [
+                  Text(frac == null ? '' : '${(frac * 100).round()}%',
+                      style: Theme.of(ctx).textTheme.titleMedium),
+                  const Spacer(),
+                  Text(total > 0 ? '${mb(done)} / ${mb(total)} MB' : '${mb(done)} MB'),
+                ]),
+              ]);
+            },
+          ),
+        ),
+      ),
+    );
+    try {
+      await Core.installApk(url);
+    } catch (e) {
+      if (mounted) setState(() => error = t('updateFailed', [_err(e)]));
+    } finally {
+      await sub.cancel();
+      if (mounted) Navigator.of(context, rootNavigator: true).pop();
+      await dialog;
+      progress.dispose();
     }
   }
 

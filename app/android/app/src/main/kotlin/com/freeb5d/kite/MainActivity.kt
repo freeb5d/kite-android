@@ -34,6 +34,7 @@ class MainActivity : FlutterActivity() {
     private val main = Handler(Looper.getMainLooper())
     private var pendingConnect: Triple<String, String, String>? = null
     private var pendingResult: MethodChannel.Result? = null
+    private var updateSink: EventChannel.EventSink? = null
 
     companion object {
         private const val REQ_VPN = 1
@@ -47,6 +48,16 @@ class MainActivity : FlutterActivity() {
         MethodChannel(messenger, "kite/core").setMethodCallHandler { call, result ->
             handle(call, result)
         }
+
+        EventChannel(messenger, "kite/update").setStreamHandler(object : EventChannel.StreamHandler {
+            override fun onListen(arguments: Any?, events: EventChannel.EventSink) {
+                updateSink = events
+            }
+
+            override fun onCancel(arguments: Any?) {
+                updateSink = null
+            }
+        })
 
         EventChannel(messenger, "kite/status").setStreamHandler(object : EventChannel.StreamHandler {
             private var listener: ((Map<String, Any?>) -> Unit)? = null
@@ -199,8 +210,27 @@ class MainActivity : FlutterActivity() {
             conn.instanceFollowRedirects = true
             conn.connectTimeout = 30_000
             conn.readTimeout = 60_000
-            conn.inputStream.use { input -> apk.outputStream().use { input.copyTo(it) } }
             val expected = conn.contentLengthLong
+            var done = 0L
+            var lastReport = 0L
+            conn.inputStream.use { input ->
+                apk.outputStream().use { out ->
+                    val buf = ByteArray(64 * 1024)
+                    while (true) {
+                        val n = input.read(buf)
+                        if (n < 0) break
+                        out.write(buf, 0, n)
+                        done += n
+                        val now = System.currentTimeMillis()
+                        if (now - lastReport > 150) {
+                            lastReport = now
+                            val d = done
+                            main.post { updateSink?.success(mapOf("downloaded" to d, "total" to expected)) }
+                        }
+                    }
+                }
+            }
+            main.post { updateSink?.success(mapOf("downloaded" to done, "total" to expected)) }
             if (expected > 0 && apk.length() != expected) {
                 throw IllegalStateException("download incomplete")
             }

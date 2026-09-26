@@ -7,6 +7,11 @@ import 'package:flutter/services.dart';
 class Core {
   static const _ch = MethodChannel('kite/core');
   static const _events = EventChannel('kite/status');
+  static const _update = EventChannel('kite/update');
+
+  /// Update download progress: {"downloaded": bytes, "total": bytes (-1 if unknown)}.
+  static Stream<Map<String, dynamic>> updateProgress() =>
+      _update.receiveBroadcastStream().map((e) => Map<String, dynamic>.from(e as Map));
 
   static Future<Map<String, dynamic>> parseLink(String link) async =>
       jsonDecode(await _ch.invokeMethod<String>('parseLink', link) ?? '{}');

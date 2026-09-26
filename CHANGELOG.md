@@ -12,6 +12,8 @@ Ping now works like v2rayNG:
 - **Clear results** from the same menu.
 - Subscription rows keep **sync** visible and move share/edit/delete/test into a **⋮** menu,
   so long subscription names fit on phones.
+- **Update download progress** — in-app updates show a progress bar, the percentage and
+  the MB downloaded, until Android's installer opens.
 
 ## ✨ v0.2.0 — Kite icon and ping modes
 
