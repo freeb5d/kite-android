@@ -1,5 +1,9 @@
 # Changelog
 
+## 🔤 v0.4.2 — Vazirmatn font for Persian
+
+- Persian now uses the **Vazirmatn** font across the whole app for clearer, more natural text.
+
 ## 🐛 v0.4.1 — Subscription list fix and tidier ping bar
 
 - Fixed subscriptions showing **0 servers**: with sorting off, the list shown under a

@@ -35,6 +35,7 @@ class _KiteAppState extends State<KiteApp> {
 
   ThemeData _theme(Brightness b) => ThemeData(
         useMaterial3: true,
+        fontFamily: lang == 'fa' ? 'Vazirmatn' : null,
         colorScheme: ColorScheme.fromSeed(seedColor: accent, brightness: b),
       );
 

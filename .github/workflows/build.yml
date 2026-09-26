@@ -62,6 +62,13 @@ jobs:
           echo "name=$V" >> $GITHUB_OUTPUT
           echo "code=$GITHUB_RUN_NUMBER" >> $GITHUB_OUTPUT
 
+      - name: Fetch Vazirmatn font
+        run: |
+          mkdir -p app/fonts
+          for w in Regular Medium Bold; do
+            curl -fsSL -o app/fonts/Vazirmatn-$w.ttf               https://cdn.jsdelivr.net/gh/rastikerdar/vazirmatn@v33.003/fonts/ttf/Vazirmatn-$w.ttf
+          done
+
       - name: Build universal APK
         working-directory: app
         env:
