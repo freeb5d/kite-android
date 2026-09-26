@@ -1,5 +1,9 @@
 # Changelog
 
+## 🟢 v0.5.2 — Green connect button
+
+- The connect button turns a soft green with a gentle glow while connected.
+
 ## 🎨 v0.5.1 — New app icon and TV banner
 
 - Sharper, full-size app icon that fills the launcher shape on every phone.

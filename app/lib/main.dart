@@ -1082,8 +1082,10 @@ class _HomePageState extends State<HomePage> {
           autofocus: autofocus,
           style: FilledButton.styleFrom(
             shape: const CircleBorder(),
-            backgroundColor: running ? scheme.primary : scheme.surfaceContainerHighest,
-            foregroundColor: running ? scheme.onPrimary : scheme.onSurfaceVariant,
+            backgroundColor: running ? const Color(0xFF3DD68C) : scheme.surfaceContainerHighest,
+            foregroundColor: running ? Colors.white : scheme.onSurfaceVariant,
+            elevation: running ? 6 : 0,
+            shadowColor: const Color(0xFF3DD68C),
           ),
           onPressed: (s == null && !running) ? null : _toggle,
           child: starting ? const CircularProgressIndicator() : const Icon(Icons.power_settings_new, size: 56),
