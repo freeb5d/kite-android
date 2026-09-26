@@ -1,8 +1,6 @@
 # Changelog
 
-## ✨ v0.3.0 — v2rayNG-style ping: sort, remove failed, test one group
-
-Ping now works like v2rayNG:
+## ✨ v0.3.0 — Ping: sort by delay, remove failed servers, test one subscription
 
 - **Sort by delay** — fastest servers first, failed ones last (in the **⋮** menu next to Ping).
 - **Remove failed servers** — deletes every server that failed the last test, after asking.
