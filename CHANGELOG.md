@@ -1,5 +1,12 @@
 # Changelog
 
+## 🐛 v0.3.1 — Accurate real delay and connection test
+
+**Real delay** and **Test connection** reported several hundred ms too much: they timed the
+very first request through the server, which is mostly one-off setup (TCP plus the TLS /
+REALITY handshakes). Both now send a warm-up request first and report the second one over
+the already-open connection, comparable with other V2Ray clients.
+
 ## ✨ v0.3.0 — Ping: sort by delay, remove failed servers, test one subscription
 
 - **Sort by delay** — fastest servers first, failed ones last (in the **⋮** menu next to Ping).

@@ -236,14 +236,20 @@ func TestConnection() (string, error) {
 	}
 	proxyURL, _ := url.Parse(fmt.Sprintf("http://127.0.0.1:%d", HTTPPort))
 	client := &http.Client{Timeout: 10 * time.Second, Transport: &http.Transport{Proxy: http.ProxyURL(proxyURL)}}
-	start := time.Now()
-	resp, err := client.Get("https://www.cloudflare.com/cdn-cgi/trace")
-	if err != nil {
-		return "", fmt.Errorf("request through proxy failed: %w", err)
+	// Two requests over one kept-alive connection: the first opens the tunnel
+	// (handshakes), the second is the round trip that's reported.
+	var body []byte
+	var delay int64
+	for i := 0; i < 2; i++ {
+		start := time.Now()
+		resp, err := client.Get("https://www.cloudflare.com/cdn-cgi/trace")
+		if err != nil {
+			return "", fmt.Errorf("request through proxy failed: %w", err)
+		}
+		body, _ = io.ReadAll(resp.Body)
+		resp.Body.Close()
+		delay = time.Since(start).Milliseconds()
 	}
-	defer resp.Body.Close()
-	delay := time.Since(start).Milliseconds()
-	body, _ := io.ReadAll(resp.Body)
 
 	result := map[string]any{"delayMs": delay}
 	for _, line := range strings.Split(string(body), "\n") {
