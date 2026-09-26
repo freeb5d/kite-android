@@ -29,8 +29,9 @@ class Core {
   static Future<Map<String, dynamic>> test() async =>
       jsonDecode(await _ch.invokeMethod<String>('test') ?? '{}');
 
-  static Future<int> ping(Map<String, dynamic> server) async =>
-      await _ch.invokeMethod<int>('ping', jsonEncode(server)) ?? -1;
+  /// [mode] is "tcp", "http" or "real".
+  static Future<int> ping(Map<String, dynamic> server, String mode) async =>
+      await _ch.invokeMethod<int>('ping', {'server': jsonEncode(server), 'mode': mode}) ?? -1;
 
   static Future<String> log() async => await _ch.invokeMethod<String>('log') ?? '';
 

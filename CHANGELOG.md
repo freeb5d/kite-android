@@ -1,5 +1,16 @@
 # Changelog
 
+## ✨ v0.2.0 — Kite icon and ping modes
+
+- **New app icon** — the Kite logo, as an adaptive icon that fits every launcher shape.
+- **Ping: TCP · HTTP · Real delay** — a switch and a Ping button above the server list, same
+  as desktop:
+  - **TCP** — time to open a connection to the server's port (fastest; only proves it's
+    reachable).
+  - **HTTP** — time until the server answers a plain HTTP request.
+  - **Real delay** — a real request through the server via a temporary xray-core connection;
+    the only mode that proves the server really works.
+
 ## ✨ v0.1.3 — Scan QR codes
 
 - The **+** dialog has a **Scan QR** button: point the camera at a server or subscription

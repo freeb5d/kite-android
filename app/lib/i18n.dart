@@ -14,6 +14,7 @@ const languages = <(String, String)>[
 
 const Map<String, Map<String, String>> _strings = {
   "en": {
+    "realDelay": "Real delay",
     "scanQr": "Scan QR",
     "scanQrHint": "Point the camera at a server or subscription QR code",
     "errorsOnly": "Errors only",
@@ -111,6 +112,7 @@ const Map<String, Map<String, String>> _strings = {
     "skippedEntries": "Imported {0} servers ({1} unsupported entries skipped).",
   },
   "zh": {
+    "realDelay": "真实延迟",
     "scanQr": "扫描二维码",
     "scanQrHint": "将相机对准服务器或订阅二维码",
     "errorsOnly": "仅错误",
@@ -208,6 +210,7 @@ const Map<String, Map<String, String>> _strings = {
     "skippedEntries": "已导入 {0} 个服务器（跳过 {1} 个不支持的条目）。",
   },
   "fa": {
+    "realDelay": "تأخیر واقعی",
     "scanQr": "اسکن QR",
     "scanQrHint": "دوربین را روی QR کد سرور یا سابسکریپشن بگیرید",
     "errorsOnly": "فقط خطاها",
@@ -305,6 +308,7 @@ const Map<String, Map<String, String>> _strings = {
     "skippedEntries": "{0} سرور وارد شد ({1} مورد پشتیبانی‌نشده رد شد).",
   },
   "tr": {
+    "realDelay": "Gerçek gecikme",
     "scanQr": "QR tara",
     "scanQrHint": "Kamerayı bir sunucu veya abonelik QR koduna tutun",
     "errorsOnly": "Yalnızca hatalar",
@@ -402,6 +406,7 @@ const Map<String, Map<String, String>> _strings = {
     "skippedEntries": "{0} sunucu içe aktarıldı ({1} desteklenmeyen girdi atlandı).",
   },
   "ar": {
+    "realDelay": "التأخير الحقيقي",
     "scanQr": "مسح QR",
     "scanQrHint": "وجّه الكاميرا إلى رمز QR لخادم أو اشتراك",
     "errorsOnly": "الأخطاء فقط",
@@ -499,6 +504,7 @@ const Map<String, Map<String, String>> _strings = {
     "skippedEntries": "تم استيراد {0} خوادم (تم تخطي {1} إدخالات غير مدعومة).",
   },
   "fr": {
+    "realDelay": "Délai réel",
     "scanQr": "Scanner un QR",
     "scanQrHint": "Pointez la caméra vers le QR code d’un serveur ou d’un abonnement",
     "errorsOnly": "Erreurs seulement",
@@ -596,6 +602,7 @@ const Map<String, Map<String, String>> _strings = {
     "skippedEntries": "{0} serveurs importés ({1} entrées non prises en charge ignorées).",
   },
   "de": {
+    "realDelay": "Echte Latenz",
     "scanQr": "QR scannen",
     "scanQrHint": "Richte die Kamera auf den QR-Code eines Servers oder Abonnements",
     "errorsOnly": "Nur Fehler",
@@ -693,6 +700,7 @@ const Map<String, Map<String, String>> _strings = {
     "skippedEntries": "{0} Server importiert ({1} nicht unterstützte Einträge übersprungen).",
   },
   "ru": {
+    "realDelay": "Реальная задержка",
     "scanQr": "Сканировать QR",
     "scanQrHint": "Наведите камеру на QR-код сервера или подписки",
     "errorsOnly": "Только ошибки",

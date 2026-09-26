@@ -29,6 +29,7 @@ import (
 	"github.com/xtls/xray-core/infra/conf/serial"
 	_ "github.com/xtls/xray-core/main/distro/all"
 
+	"github.com/freeb5d/kite/pkg/probe"
 	"github.com/freeb5d/kite/pkg/profile"
 	"github.com/freeb5d/kite/pkg/xrayconf"
 )
@@ -259,20 +260,15 @@ func TestConnection() (string, error) {
 	return toJSON(result)
 }
 
-// Ping measures a TCP connect time to the server (JSON) in ms, without
-// connecting the VPN -- for sorting servers by latency.
-func Ping(serverJSON string) (int, error) {
+// Ping measures a server's delay in ms. mode is "tcp", "http" or "real"
+// (a real request through a temporary xray-core instance) -- the same
+// measurement the desktop app uses (github.com/freeb5d/kite/pkg/probe).
+func Ping(serverJSON, mode string) (int, error) {
 	var s profile.Server
 	if err := json.Unmarshal([]byte(serverJSON), &s); err != nil {
 		return 0, err
 	}
-	start := time.Now()
-	conn, err := net.DialTimeout("tcp", net.JoinHostPort(s.Address, strconv.Itoa(s.Port)), 5*time.Second)
-	if err != nil {
-		return 0, err
-	}
-	conn.Close()
-	return int(time.Since(start).Milliseconds()), nil
+	return probe.Ping(s, mode)
 }
 
 // CoreVersion returns the embedded xray-core version.

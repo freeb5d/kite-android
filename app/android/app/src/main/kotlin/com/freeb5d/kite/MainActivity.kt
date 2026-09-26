@@ -83,7 +83,11 @@ class MainActivity : FlutterActivity() {
             "traffic" -> result.success(Kitecore.traffic())
             "test" -> background(result) { Kitecore.testConnection() }
             "ping" -> background(result) {
-                try { Kitecore.ping(call.arguments as String).toInt() } catch (_: Exception) { -1 }
+                try {
+                    Kitecore.ping(call.argument<String>("server"), call.argument<String>("mode") ?: "tcp").toInt()
+                } catch (_: Exception) {
+                    -1
+                }
             }
             "log" -> background(result) {
                 val f = KiteVpnService.logFile(this)

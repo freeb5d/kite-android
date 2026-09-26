@@ -96,6 +96,7 @@ class _HomePageState extends State<HomePage> {
   final syncing = <String>{};
   final pings = <String, int>{};
   bool pinging = false;
+  String pingMode = Store.getString('pingMode') ?? 'tcp';
   Map<String, dynamic> info = {};
   Map<String, dynamic> traffic = {'uplink': 0, 'downlink': 0};
   Map<String, double> speed = {'up': 0, 'down': 0};
@@ -411,17 +412,60 @@ class _HomePageState extends State<HomePage> {
       pinging = true;
       pings.clear();
     });
-    await Future.wait(servers.map((s) async {
-      int ms;
-      try {
-        ms = await Core.ping(s);
-      } catch (_) {
-        ms = -1;
+    // Real delay starts an xray-core instance per server, so keep it gentle.
+    final queue = [...servers];
+    final workers = pingMode == 'real' ? 4 : 16;
+    Future<void> worker() async {
+      while (queue.isNotEmpty) {
+        final s = queue.removeAt(0);
+        int ms;
+        try {
+          ms = await Core.ping(s, pingMode);
+        } catch (_) {
+          ms = -1;
+        }
+        if (mounted) setState(() => pings['${s['id']}'] = ms);
       }
-      if (mounted) setState(() => pings['${s['id']}'] = ms);
-    }));
+    }
+
+    await Future.wait(List.generate(workers, (_) => worker()));
     if (mounted) setState(() => pinging = false);
   }
+
+  Widget _pingBar() => Padding(
+        padding: const EdgeInsets.fromLTRB(8, 8, 8, 4),
+        child: Row(children: [
+          Expanded(
+            child: SegmentedButton<String>(
+              showSelectedIcon: false,
+              style: const ButtonStyle(visualDensity: VisualDensity.compact),
+              segments: [
+                const ButtonSegment(value: 'tcp', label: Text('TCP')),
+                const ButtonSegment(value: 'http', label: Text('HTTP')),
+                ButtonSegment(value: 'real', label: Text(t('realDelay'))),
+              ],
+              selected: {pingMode},
+              onSelectionChanged: pinging
+                  ? null
+                  : (v) {
+                      setState(() {
+                        pingMode = v.first;
+                        pings.clear();
+                      });
+                      Store.setString('pingMode', pingMode);
+                    },
+            ),
+          ),
+          const SizedBox(width: 8),
+          FilledButton.tonalIcon(
+            onPressed: pinging || servers.isEmpty ? null : _pingAll,
+            icon: pinging
+                ? const SizedBox(width: 16, height: 16, child: CircularProgressIndicator(strokeWidth: 2))
+                : const Icon(Icons.network_ping, size: 18),
+            label: Text(pinging ? t('pinging') : t('ping')),
+          ),
+        ]),
+      );
 
   // ---------- connection ----------
 
@@ -628,13 +672,6 @@ class _HomePageState extends State<HomePage> {
           title: const Text('Kite'),
           actions: [
             IconButton(tooltip: t('addServer'), icon: const Icon(Icons.add), onPressed: _addDialog),
-            IconButton(
-              tooltip: pinging ? t('pinging') : t('ping'),
-              icon: pinging
-                  ? const SizedBox(width: 20, height: 20, child: CircularProgressIndicator(strokeWidth: 2))
-                  : const Icon(Icons.network_ping),
-              onPressed: pinging ? null : _pingAll,
-            ),
             IconButton(tooltip: t('showLog'), icon: const Icon(Icons.terminal), onPressed: _showLog),
             IconButton(tooltip: t('language'), icon: const Icon(Icons.translate), onPressed: _pickLanguage),
             IconButton(
@@ -677,6 +714,7 @@ class _HomePageState extends State<HomePage> {
       ];
     }
     return [
+      _pingBar(),
       for (final s in standalone) _serverTile(s),
       for (final g in groups) _groupTile(g),
     ];
