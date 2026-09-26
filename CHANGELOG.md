@@ -1,5 +1,13 @@
 # Changelog
 
+## 🐛 v0.4.1 — Subscription list fix and tidier ping bar
+
+- Fixed subscriptions showing **0 servers**: with sorting off, the list shown under a
+  subscription was emptied on screen (the servers themselves were never lost).
+- The ping bar fits on phones: TCP / HTTP / Real delay on one line, with compact Ping and
+  menu buttons.
+- Slightly more compact connect button, so more of the server list fits on screen.
+
 ## ✨ v0.4.0 — Edit servers and add them manually
 
 - **Server editor** — "Edit" in a server's menu opens a full-screen editor: name, address,

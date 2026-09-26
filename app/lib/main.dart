@@ -183,7 +183,7 @@ class _HomePageState extends State<HomePage> {
       g.servers.add(s);
     }
     for (final g in groups.values) {
-      final sorted = _byDelay(g.servers);
+      final sorted = [..._byDelay(g.servers)];
       g.servers
         ..clear()
         ..addAll(sorted);
@@ -529,68 +529,74 @@ class _HomePageState extends State<HomePage> {
     return [...list]..sort((a, b) => rank(a).compareTo(rank(b)));
   }
 
-  Widget _pingBar() => Padding(
-        padding: const EdgeInsets.fromLTRB(8, 8, 8, 4),
-        child: Row(children: [
-          Expanded(
-            child: SegmentedButton<String>(
-              showSelectedIcon: false,
-              style: const ButtonStyle(visualDensity: VisualDensity.compact),
-              segments: [
-                const ButtonSegment(value: 'tcp', label: Text('TCP')),
-                const ButtonSegment(value: 'http', label: Text('HTTP')),
-                ButtonSegment(value: 'real', label: Text(t('realDelay'))),
-              ],
-              selected: {pingMode},
-              onSelectionChanged: pinging
-                  ? null
-                  : (v) {
-                      setState(() {
-                        pingMode = v.first;
-                        pings.clear();
-                      });
-                      _savePings();
-                      Store.setString('pingMode', pingMode);
-                    },
+  Widget _pingBar() {
+    Widget seg(String label) => FittedBox(fit: BoxFit.scaleDown, child: Text(label, maxLines: 1, softWrap: false));
+    return Padding(
+      padding: const EdgeInsets.fromLTRB(12, 12, 4, 4),
+      child: Row(children: [
+        Expanded(
+          child: SegmentedButton<String>(
+            showSelectedIcon: false,
+            style: const ButtonStyle(
+              visualDensity: VisualDensity.compact,
+              padding: WidgetStatePropertyAll(EdgeInsets.symmetric(horizontal: 6)),
             ),
-          ),
-          const SizedBox(width: 8),
-          pinging
-              ? OutlinedButton.icon(
-                  onPressed: () => setState(() => cancelPing = true),
-                  icon: const SizedBox(width: 16, height: 16, child: CircularProgressIndicator(strokeWidth: 2)),
-                  label: Text(t('stop')),
-                )
-              : FilledButton.tonalIcon(
-                  onPressed: servers.isEmpty ? null : () => _ping(servers),
-                  icon: const Icon(Icons.network_ping, size: 18),
-                  label: Text(t('ping')),
-                ),
-          PopupMenuButton<String>(
-            tooltip: t('more'),
-            onSelected: (v) {
-              if (v == 'sort') {
-                setState(() => sortByDelay = !sortByDelay);
-                Store.setBool('sortByDelay', sortByDelay);
-              }
-              if (v == 'removeFailed') _removeFailed();
-              if (v == 'clear') {
-                setState(pings.clear);
-                _savePings();
-              }
-            },
-            itemBuilder: (_) => [
-              CheckedPopupMenuItem(value: 'sort', checked: sortByDelay, child: Text(t('sortByDelay'))),
-              PopupMenuItem(
-                value: 'removeFailed',
-                enabled: !pinging && servers.any((s) => pings['${s['id']}'] == -1),
-                child: Text(t('removeFailed')),
-              ),
-              PopupMenuItem(value: 'clear', child: Text(t('clearResults'))),
+            segments: [
+              ButtonSegment(value: 'tcp', label: seg('TCP')),
+              ButtonSegment(value: 'http', label: seg('HTTP')),
+              ButtonSegment(value: 'real', label: seg(t('realDelay'))),
             ],
+            selected: {pingMode},
+            onSelectionChanged: pinging
+                ? null
+                : (v) {
+                    setState(() {
+                      pingMode = v.first;
+                      pings.clear();
+                    });
+                    _savePings();
+                    Store.setString('pingMode', pingMode);
+                  },
           ),
-        ]),
-      );
+        ),
+        const SizedBox(width: 4),
+        pinging
+            ? IconButton.outlined(
+                tooltip: t('stop'),
+                onPressed: () => setState(() => cancelPing = true),
+                icon: const Icon(Icons.stop),
+              )
+            : IconButton.filledTonal(
+                tooltip: t('ping'),
+                onPressed: servers.isEmpty ? null : () => _ping(servers),
+                icon: const Icon(Icons.network_ping),
+              ),
+        PopupMenuButton<String>(
+          tooltip: t('more'),
+          onSelected: (v) {
+            if (v == 'sort') {
+              setState(() => sortByDelay = !sortByDelay);
+              Store.setBool('sortByDelay', sortByDelay);
+            }
+            if (v == 'removeFailed') _removeFailed();
+            if (v == 'clear') {
+              setState(pings.clear);
+              _savePings();
+            }
+          },
+          itemBuilder: (_) => [
+            CheckedPopupMenuItem(value: 'sort', checked: sortByDelay, child: Text(t('sortByDelay'))),
+            PopupMenuItem(
+              value: 'removeFailed',
+              enabled: !pinging && servers.any((s) => pings['${s['id']}'] == -1),
+              child: Text(t('removeFailed')),
+            ),
+            PopupMenuItem(value: 'clear', child: Text(t('clearResults'))),
+          ],
+        ),
+      ]),
+    );
+  }
 
   // ---------- connection ----------
 
@@ -1018,10 +1024,10 @@ class _HomePageState extends State<HomePage> {
       ),
       const SizedBox(height: 6),
       Text(mode == 'vpn' ? t('vpnModeHint') : t('proxyModeHint'), style: theme.textTheme.bodySmall, textAlign: TextAlign.center),
-      const SizedBox(height: 24),
+      const SizedBox(height: 20),
       SizedBox(
-        width: 150,
-        height: 150,
+        width: 132,
+        height: 132,
         child: FilledButton(
           autofocus: autofocus,
           style: FilledButton.styleFrom(
@@ -1030,7 +1036,7 @@ class _HomePageState extends State<HomePage> {
             foregroundColor: running ? scheme.onPrimary : scheme.onSurfaceVariant,
           ),
           onPressed: (s == null && !running) ? null : _toggle,
-          child: starting ? const CircularProgressIndicator() : const Icon(Icons.power_settings_new, size: 64),
+          child: starting ? const CircularProgressIndicator() : const Icon(Icons.power_settings_new, size: 56),
         ),
       ),
       const SizedBox(height: 12),
