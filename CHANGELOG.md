@@ -1,5 +1,15 @@
 # Changelog
 
+## ✨ v0.4.0 — Edit servers and add them manually
+
+- **Server editor** — "Edit" in a server's menu opens a full-screen editor: name, address,
+  port; UUID / password / method depending on the protocol, VLESS flow and encryption, VMess
+  cipher; transport (TCP with optional HTTP header, WebSocket, gRPC) with host, path and
+  service name; security (none, TLS, REALITY) with SNI, fingerprint, ALPN, public key,
+  short ID and spiderX.
+- **Add manually** — the add dialog can create a new VLESS, VMess, Trojan or Shadowsocks
+  server from scratch in the same editor.
+
 ## 🐛 v0.3.1 — Accurate real delay and connection test
 
 **Real delay** and **Test connection** reported several hundred ms too much: they timed the

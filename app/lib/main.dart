@@ -7,6 +7,7 @@ import 'package:http/http.dart' as http;
 
 import 'about.dart';
 import 'core.dart';
+import 'editor.dart';
 import 'i18n.dart';
 import 'scan.dart';
 import 'store.dart';
@@ -228,12 +229,21 @@ class _HomePageState extends State<HomePage> {
               if (data?.text != null) ctrl.text = data!.text!.trim();
             },
           ),
+          TextButton.icon(
+            icon: const Icon(Icons.edit_note),
+            label: Text(t('addManually')),
+            onPressed: () => Navigator.pop(ctx, '\u0000manual'),
+          ),
           TextButton(onPressed: () => Navigator.pop(ctx), child: Text(t('cancel'))),
           FilledButton(onPressed: () => Navigator.pop(ctx, ctrl.text.trim()), child: Text(t('add'))),
         ],
       ),
     );
     if (value == null || value.isEmpty) return;
+    if (value == '\u0000manual') {
+      await _addManually();
+      return;
+    }
     await _addFromText(value);
   }
 
@@ -409,6 +419,41 @@ class _HomePageState extends State<HomePage> {
     s['name'] = name.trim();
     await _save();
     setState(() {});
+  }
+
+  /// Opens the full editor for [s] (an existing server, or a new one without
+  /// an id) and saves the result.
+  Future<void> _editServer(Server s) async {
+    final edited = await Navigator.of(context).push<Server>(
+      MaterialPageRoute(builder: (_) => ServerEditorPage(initial: s, t: t)),
+    );
+    if (edited == null) return;
+    final id = edited['id'] ?? newId();
+    edited['id'] = id;
+    final i = servers.indexWhere((x) => x['id'] == id);
+    if (i >= 0) {
+      servers[i] = edited;
+    } else {
+      servers.add(edited);
+    }
+    await _save();
+    setState(() {});
+    _select('$id');
+  }
+
+  Future<void> _addManually() async {
+    final proto = await showDialog<String>(
+      context: context,
+      builder: (ctx) => SimpleDialog(
+        title: Text(t('protocol')),
+        children: [
+          for (final (p, label) in const [('vless', 'VLESS'), ('vmess', 'VMess'), ('trojan', 'Trojan'), ('shadowsocks', 'Shadowsocks')])
+            SimpleDialogOption(onPressed: () => Navigator.pop(ctx, p), child: Text(label)),
+        ],
+      ),
+    );
+    if (proto == null) return;
+    await _editServer({'name': '', 'protocol': proto, 'address': '', 'port': 443, 'extra': <String, String>{}});
   }
 
   Future<void> _deleteServer(Server s) async {
@@ -863,12 +908,12 @@ class _HomePageState extends State<HomePage> {
           PopupMenuButton<String>(
             onSelected: (v) {
               if (v == 'share') _shareServer(s);
-              if (v == 'rename') _renameServer(s);
+              if (v == 'rename') _editServer(s);
               if (v == 'delete') _deleteServer(s);
             },
             itemBuilder: (_) => [
               PopupMenuItem(value: 'share', child: Text(t('shareLink'))),
-              PopupMenuItem(value: 'rename', child: Text(t('rename'))),
+              PopupMenuItem(value: 'rename', child: Text(t('editServer'))),
               PopupMenuItem(value: 'delete', child: Text(t('remove'))),
             ],
           ),
