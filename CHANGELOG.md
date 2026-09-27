@@ -1,5 +1,9 @@
 # Changelog
 
+## 🐛 v0.7.1 — SSH default port
+
+- A new SSH server added manually starts on port 22.
+
 ## 🔐 v0.7.0 — SSH servers
 
 - **SSH** — use any SSH server as a proxy: password or private key (with optional

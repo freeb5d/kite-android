@@ -515,7 +515,7 @@ class _HomePageState extends State<HomePage> {
       ),
     );
     if (proto == null) return;
-    await _editServer({'name': '', 'protocol': proto, 'address': '', 'port': 443, 'extra': <String, String>{}});
+    await _editServer({'name': '', 'protocol': proto, 'address': '', 'port': proto == 'ssh' ? 22 : 443, 'extra': <String, String>{}});
   }
 
   Future<void> _deleteServer(Server s) async {
