@@ -9,6 +9,9 @@ const _ssMethods = [
 ];
 const _vmessCiphers = ['auto', 'aes-128-gcm', 'chacha20-poly1305', 'none', 'zero'];
 const _flows = ['', 'xtls-rprx-vision', 'xtls-rprx-vision-udp443'];
+const _networks = ['tcp', 'kcp', 'ws', 'httpupgrade', 'xhttp', 'h2', 'grpc'];
+const _xhttpModes = ['auto', 'packet-up', 'stream-up', 'stream-one'];
+const _kcpHeaders = ['none', 'srtp', 'utp', 'wechat-video', 'dtls', 'wireguard', 'dns'];
 
 /// Full-screen editor for one server (existing or new). Pops with the
 /// edited server, or null when cancelled.
@@ -156,6 +159,7 @@ class _ServerEditorPageState extends State<ServerEditorPage> {
               _section(t('security')),
               _text(t('sni'), e['sni'], (v) => e['sni'] = v),
               _text(t('pinSHA256'), e['pinSHA256'], (v) => e['pinSHA256'] = v),
+              _text(t('ech'), e['ech'], (v) => e['ech'] = v),
               _select(t('obfs'), e['obfs'] ?? '', const ['', 'salamander'], (v) => e['obfs'] = v),
               if (e['obfs'] == 'salamander')
                 _text(t('obfsPassword'), e['obfs-password'], (v) => e['obfs-password'] = v),
@@ -166,15 +170,33 @@ class _ServerEditorPageState extends State<ServerEditorPage> {
             ],
             if (!const ['shadowsocks', 'hysteria2', 'ssh'].contains(protocol)) ...[
               _section(t('transport')),
-              _select(t('network'), type, ['tcp', 'ws', 'grpc'], (v) => e['type'] = v),
+              _select(t('network'), type, _networks, (v) {
+                e['type'] = v;
+                e['headerType'] = '';
+                e['mode'] = '';
+              }),
               if (type == 'tcp')
                 _select(t('headerType'), e['headerType'] == 'http' ? 'http' : 'none', ['none', 'http'],
                     (v) => e['headerType'] = v == 'none' ? '' : v),
-              if (type == 'ws' || (type == 'tcp' && e['headerType'] == 'http')) ...[
+              if (const ['ws', 'httpupgrade', 'xhttp', 'h2'].contains(type) ||
+                  (type == 'tcp' && e['headerType'] == 'http')) ...[
                 _text(t('hostHeader'), e['host'], (v) => e['host'] = v),
                 _text(t('path'), e['path'], (v) => e['path'] = v, hint: '/'),
               ],
-              if (type == 'grpc') _text(t('serviceName'), e['serviceName'], (v) => e['serviceName'] = v),
+              if (type == 'xhttp') ...[
+                _select(t('mode'), e['mode'] ?? 'auto', _xhttpModes, (v) => e['mode'] = v == 'auto' ? '' : v),
+                _text(t('xhttpExtra'), e['extra'], (v) => e['extra'] = v, hint: '{"xPaddingBytes":"100-1000"}'),
+              ],
+              if (type == 'kcp') ...[
+                _select(t('headerType'), e['headerType'] ?? 'none', _kcpHeaders,
+                    (v) => e['headerType'] = v == 'none' ? '' : v),
+                _text(t('seed'), e['seed'], (v) => e['seed'] = v),
+              ],
+              if (type == 'grpc') ...[
+                _text(t('serviceName'), e['serviceName'], (v) => e['serviceName'] = v),
+                _select(t('mode'), e['mode'] ?? 'gun', const ['gun', 'multi'], (v) => e['mode'] = v == 'gun' ? '' : v),
+                _text(t('authority'), e['authority'], (v) => e['authority'] = v),
+              ],
               _section(t('security')),
               _select(t('security'), security, ['none', 'tls', 'reality'], (v) => e['security'] = v),
               if (security != 'none') ...[
@@ -182,6 +204,8 @@ class _ServerEditorPageState extends State<ServerEditorPage> {
                 _select(t('fingerprint'), e['fp'] ?? '', _fingerprints, (v) => e['fp'] = v),
               ],
               if (security == 'tls') _text(t('alpn'), e['alpn'], (v) => e['alpn'] = v, hint: 'h2,http/1.1'),
+              if (security == 'tls')
+                _text(t('ech'), e['ech'], (v) => e['ech'] = v, hint: 'cloudflare-ech.com+https://1.1.1.1/dns-query'),
               if (security == 'reality') ...[
                 _text(t('publicKey'), e['pbk'], (v) => e['pbk'] = v),
                 _text(t('shortId'), e['sid'], (v) => e['sid'] = v),

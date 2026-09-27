@@ -1,5 +1,15 @@
 # Changelog
 
+## 🧩 v0.8.0 — More transports and ECH
+
+- **New transports**: mKCP (header type and seed), HTTPUpgrade, XHTTP (mode and advanced
+  JSON options) and h2 (carried over XHTTP's HTTP/2 stream mode, since xray-core no longer
+  ships the plain HTTP/2 transport). gRPC gains multi mode and authority.
+- **ECH** (Encrypted Client Hello) for TLS and Hysteria2 servers — hides the real site name
+  from network filters.
+- Links and Clash, sing-box and Xray subscriptions using these options import correctly,
+  and all of them can be set in the server editor.
+
 ## 🐛 v0.7.1 — SSH default port
 
 - A new SSH server added manually starts on port 22.
