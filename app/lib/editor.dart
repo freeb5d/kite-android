@@ -58,6 +58,10 @@ class _ServerEditorPageState extends State<ServerEditorPage> {
     }
     final extra = Map<String, String>.from(e)..removeWhere((_, v) => v.isEmpty);
     if (extra['security'] == 'none') extra.remove('security');
+    if (protocol == 'hysteria2') {
+      extra.remove('type');
+      extra.remove('security');
+    }
     final name = '${s['name'] ?? ''}'.trim();
     Navigator.pop(context, {
       ...s,
@@ -125,11 +129,21 @@ class _ServerEditorPageState extends State<ServerEditorPage> {
               _text(t('encryption'), e['encryption'], (v) => e['encryption'] = v, hint: 'none'),
             ],
             if (protocol == 'trojan') _text(t('password'), s['password'] as String?, (v) => s['password'] = v),
+            if (protocol == 'hysteria2') ...[
+              _text(t('password'), s['password'] as String?, (v) => s['password'] = v),
+              _text(t('portHopping'), e['mport'], (v) => e['mport'] = v, hint: '20000-30000'),
+              _section(t('security')),
+              _text(t('sni'), e['sni'], (v) => e['sni'] = v),
+              _text(t('pinSHA256'), e['pinSHA256'], (v) => e['pinSHA256'] = v),
+              _select(t('obfs'), e['obfs'] ?? '', const ['', 'salamander'], (v) => e['obfs'] = v),
+              if (e['obfs'] == 'salamander')
+                _text(t('obfsPassword'), e['obfs-password'], (v) => e['obfs-password'] = v),
+            ],
             if (protocol == 'shadowsocks') ...[
               _select(t('method'), '${s['method'] ?? 'aes-256-gcm'}', _ssMethods, (v) => s['method'] = v),
               _text(t('password'), s['password'] as String?, (v) => s['password'] = v),
             ],
-            if (protocol != 'shadowsocks') ...[
+            if (protocol != 'shadowsocks' && protocol != 'hysteria2') ...[
               _section(t('transport')),
               _select(t('network'), type, ['tcp', 'ws', 'grpc'], (v) => e['type'] = v),
               if (type == 'tcp')

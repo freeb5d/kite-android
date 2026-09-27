@@ -17,7 +17,7 @@ class _ScanPageState extends State<ScanPage> {
   final controller = MobileScannerController(formats: const [BarcodeFormat.qrCode]);
   bool done = false;
 
-  static final _useful = RegExp(r'^(vmess|vless|trojan|ss|https?)://', caseSensitive: false);
+  static final _useful = RegExp(r'^(vmess|vless|trojan|ss|hysteria2|hy2|https?)://', caseSensitive: false);
 
   void _onDetect(BarcodeCapture capture) {
     if (done) return;

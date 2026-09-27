@@ -509,7 +509,7 @@ class _HomePageState extends State<HomePage> {
       builder: (ctx) => SimpleDialog(
         title: Text(t('protocol')),
         children: [
-          for (final (p, label) in const [('vless', 'VLESS'), ('vmess', 'VMess'), ('trojan', 'Trojan'), ('shadowsocks', 'Shadowsocks')])
+          for (final (p, label) in const [('vless', 'VLESS'), ('vmess', 'VMess'), ('trojan', 'Trojan'), ('shadowsocks', 'Shadowsocks'), ('hysteria2', 'Hysteria2')])
             SimpleDialogOption(onPressed: () => Navigator.pop(ctx, p), child: Text(label)),
         ],
       ),

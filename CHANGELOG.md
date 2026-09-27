@@ -1,5 +1,13 @@
 # Changelog
 
+## 🚀 v0.6.0 — Hysteria2 support
+
+- **Hysteria2** — `hysteria2://` and `hy2://` links (and Hysteria2 entries in Clash, sing-box
+  and Xray subscriptions) now import and connect, with Salamander obfuscation, port hopping,
+  custom SNI and certificate pinning. Scan them from a QR code too.
+- The server editor supports Hysteria2, and it can be added manually.
+- Pinging a Hysteria2 server always measures real delay, since it runs over UDP (QUIC).
+
 ## 📺 v0.5.3 — Clearer focus on Android TV
 
 - The control selected with the remote is now clearly highlighted with a strong tint and a

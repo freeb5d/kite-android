@@ -14,6 +14,10 @@ const languages = <(String, String)>[
 
 const Map<String, Map<String, String>> _strings = {
   "en": {
+    "portHopping": "Port hopping",
+    "pinSHA256": "Certificate pin (SHA-256)",
+    "obfs": "Obfuscation",
+    "obfsPassword": "Obfuscation password",
     "sendToTv": "Send to TV",
     "receiveFromPhone": "Receive from phone",
     "receiveHint": "On your phone, open Kite, choose “Send to TV” on a server or subscription and scan this code. Both devices must be on the same Wi-Fi.",
@@ -153,6 +157,10 @@ const Map<String, Map<String, String>> _strings = {
     "skippedEntries": "Imported {0} servers ({1} unsupported entries skipped).",
   },
   "zh": {
+    "portHopping": "端口跳跃",
+    "pinSHA256": "证书固定 (SHA-256)",
+    "obfs": "混淆",
+    "obfsPassword": "混淆密码",
     "sendToTv": "发送到电视",
     "receiveFromPhone": "从手机接收",
     "receiveHint": "在手机上打开 Kite，在服务器或订阅菜单中选择“发送到电视”，然后扫描此二维码。两台设备需连接同一 Wi-Fi。",
@@ -292,6 +300,10 @@ const Map<String, Map<String, String>> _strings = {
     "skippedEntries": "已导入 {0} 个服务器（跳过 {1} 个不支持的条目）。",
   },
   "fa": {
+    "portHopping": "پرش پورت",
+    "pinSHA256": "پین گواهی (SHA-256)",
+    "obfs": "مبهم‌سازی",
+    "obfsPassword": "رمز مبهم‌سازی",
     "sendToTv": "ارسال به تلویزیون",
     "receiveFromPhone": "دریافت از گوشی",
     "receiveHint": "در گوشی، Kite را باز کنید، در منوی سرور یا اشتراک «ارسال به تلویزیون» را بزنید و این کد را اسکن کنید. هر دو دستگاه باید به یک وای‌فای وصل باشند.",
@@ -431,6 +443,10 @@ const Map<String, Map<String, String>> _strings = {
     "skippedEntries": "{0} سرور وارد شد ({1} مورد پشتیبانی‌نشده رد شد).",
   },
   "tr": {
+    "portHopping": "Port atlama",
+    "pinSHA256": "Sertifika sabitleme (SHA-256)",
+    "obfs": "Gizleme",
+    "obfsPassword": "Gizleme parolası",
     "sendToTv": "TV'ye gönder",
     "receiveFromPhone": "Telefondan al",
     "receiveHint": "Telefonunuzda Kite'ı açın, bir sunucu veya abonelik menüsünden “TV'ye gönder”i seçin ve bu kodu tarayın. İki cihaz aynı Wi-Fi'de olmalıdır.",
@@ -570,6 +586,10 @@ const Map<String, Map<String, String>> _strings = {
     "skippedEntries": "{0} sunucu içe aktarıldı ({1} desteklenmeyen girdi atlandı).",
   },
   "ar": {
+    "portHopping": "تنقّل المنافذ",
+    "pinSHA256": "تثبيت الشهادة (SHA-256)",
+    "obfs": "التمويه",
+    "obfsPassword": "كلمة مرور التمويه",
     "sendToTv": "إرسال إلى التلفاز",
     "receiveFromPhone": "استلام من الهاتف",
     "receiveHint": "على هاتفك افتح Kite، واختر «إرسال إلى التلفاز» من قائمة خادم أو اشتراك، ثم امسح هذا الرمز. يجب أن يكون الجهازان على نفس شبكة Wi-Fi.",
@@ -709,6 +729,10 @@ const Map<String, Map<String, String>> _strings = {
     "skippedEntries": "تم استيراد {0} خوادم (تم تخطي {1} إدخالات غير مدعومة).",
   },
   "fr": {
+    "portHopping": "Saut de ports",
+    "pinSHA256": "Épinglage du certificat (SHA-256)",
+    "obfs": "Obfuscation",
+    "obfsPassword": "Mot de passe d’obfuscation",
     "sendToTv": "Envoyer à la TV",
     "receiveFromPhone": "Recevoir du téléphone",
     "receiveHint": "Sur votre téléphone, ouvrez Kite, choisissez « Envoyer à la TV » dans le menu d'un serveur ou d'un abonnement et scannez ce code. Les deux appareils doivent être sur le même Wi-Fi.",
@@ -848,6 +872,10 @@ const Map<String, Map<String, String>> _strings = {
     "skippedEntries": "{0} serveurs importés ({1} entrées non prises en charge ignorées).",
   },
   "de": {
+    "portHopping": "Port-Hopping",
+    "pinSHA256": "Zertifikat-Pin (SHA-256)",
+    "obfs": "Verschleierung",
+    "obfsPassword": "Verschleierungs-Passwort",
     "sendToTv": "An TV senden",
     "receiveFromPhone": "Vom Handy empfangen",
     "receiveHint": "Öffne Kite auf dem Handy, wähle im Menü eines Servers oder Abos „An TV senden“ und scanne diesen Code. Beide Geräte müssen im selben WLAN sein.",
@@ -987,6 +1015,10 @@ const Map<String, Map<String, String>> _strings = {
     "skippedEntries": "{0} Server importiert ({1} nicht unterstützte Einträge übersprungen).",
   },
   "ru": {
+    "portHopping": "Смена портов",
+    "pinSHA256": "Пин сертификата (SHA-256)",
+    "obfs": "Обфускация",
+    "obfsPassword": "Пароль обфускации",
     "sendToTv": "Отправить на ТВ",
     "receiveFromPhone": "Получить с телефона",
     "receiveHint": "На телефоне откройте Kite, выберите «Отправить на ТВ» в меню сервера или подписки и отсканируйте этот код. Оба устройства должны быть в одной Wi-Fi-сети.",
