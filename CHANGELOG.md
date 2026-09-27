@@ -1,5 +1,14 @@
 # Changelog
 
+## 🔐 v0.7.0 — SSH servers
+
+- **SSH** — use any SSH server as a proxy: password or private key (with optional
+  passphrase), and optional host-key verification. Works in VPN and proxy mode; DNS is
+  resolved over TCP through the tunnel.
+- `ssh://user:password@host:port#name` links import (also from QR codes) and share; SSH
+  servers can be added manually and edited.
+- SSH carries TCP only — apps that try UDP (e.g. QUIC) fall back to TCP automatically.
+
 ## 🚀 v0.6.0 — Hysteria2 support
 
 - **Hysteria2** — `hysteria2://` and `hy2://` links (and Hysteria2 entries in Clash, sing-box

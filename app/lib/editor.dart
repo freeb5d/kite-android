@@ -58,7 +58,7 @@ class _ServerEditorPageState extends State<ServerEditorPage> {
     }
     final extra = Map<String, String>.from(e)..removeWhere((_, v) => v.isEmpty);
     if (extra['security'] == 'none') extra.remove('security');
-    if (protocol == 'hysteria2') {
+    if (protocol == 'hysteria2' || protocol == 'ssh') {
       extra.remove('type');
       extra.remove('security');
     }
@@ -129,6 +129,27 @@ class _ServerEditorPageState extends State<ServerEditorPage> {
               _text(t('encryption'), e['encryption'], (v) => e['encryption'] = v, hint: 'none'),
             ],
             if (protocol == 'trojan') _text(t('password'), s['password'] as String?, (v) => s['password'] = v),
+            if (protocol == 'ssh') ...[
+              _text(t('username'), e['user'], (v) => e['user'] = v, hint: 'root'),
+              _text(t('password'), s['password'] as String?, (v) => s['password'] = v),
+              Padding(
+                padding: const EdgeInsets.only(bottom: 12),
+                child: TextFormField(
+                  initialValue: e['pk'] ?? '',
+                  minLines: 3,
+                  maxLines: 6,
+                  style: const TextStyle(fontFamily: 'monospace', fontSize: 12),
+                  decoration: InputDecoration(
+                      labelText: t('privateKey'),
+                      hintText: '-----BEGIN OPENSSH PRIVATE KEY-----',
+                      border: const OutlineInputBorder(),
+                      isDense: true),
+                  onChanged: (v) => setState(() => e['pk'] = v),
+                ),
+              ),
+              if ((e['pk'] ?? '').isNotEmpty) _text(t('keyPassphrase'), e['pp'], (v) => e['pp'] = v),
+              _text(t('hostKey'), e['hk'], (v) => e['hk'] = v, hint: 'SHA256:…'),
+            ],
             if (protocol == 'hysteria2') ...[
               _text(t('password'), s['password'] as String?, (v) => s['password'] = v),
               _text(t('portHopping'), e['mport'], (v) => e['mport'] = v, hint: '20000-30000'),
@@ -143,7 +164,7 @@ class _ServerEditorPageState extends State<ServerEditorPage> {
               _select(t('method'), '${s['method'] ?? 'aes-256-gcm'}', _ssMethods, (v) => s['method'] = v),
               _text(t('password'), s['password'] as String?, (v) => s['password'] = v),
             ],
-            if (protocol != 'shadowsocks' && protocol != 'hysteria2') ...[
+            if (!const ['shadowsocks', 'hysteria2', 'ssh'].contains(protocol)) ...[
               _section(t('transport')),
               _select(t('network'), type, ['tcp', 'ws', 'grpc'], (v) => e['type'] = v),
               if (type == 'tcp')

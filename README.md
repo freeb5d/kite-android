@@ -40,7 +40,7 @@ Kite checks GitHub for new versions on launch and can update itself in one tap.
 
 ## ✨ Features
 
-- **All common link types** — `vmess://`, `vless://`, `trojan://`, `ss://`, `hysteria2://`. Paste one link, or
+- **All common link types** — `vmess://`, `vless://`, `trojan://`, `ss://`, `hysteria2://`, `ssh://`. Paste one link, or
   several at once.
 - **Every subscription format** — base64 link lists (V2RayN/V2RayNG/3x-ui/Marzban), Clash/Mihomo
   YAML, sing-box JSON, Xray JSON and Shadowsocks SIP008. Unsupported entries are skipped, not fatal.

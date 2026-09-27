@@ -31,6 +31,7 @@ import (
 
 	"github.com/freeb5d/kite/pkg/probe"
 	"github.com/freeb5d/kite/pkg/profile"
+	"github.com/freeb5d/kite/pkg/sshbridge"
 	"github.com/freeb5d/kite/pkg/xrayconf"
 
 	"golang.org/x/sys/unix"
@@ -166,6 +167,8 @@ func Start(serverJSON string, tunFd int, logPath string) error {
 	defer func() {
 		if !started {
 			releaseTun()
+			bridge.Close()
+			bridge = nil
 		}
 	}()
 
@@ -177,12 +180,23 @@ func Start(serverJSON string, tunFd int, logPath string) error {
 		// xray-core's Android TUN inbound reads the fd from here.
 		os.Setenv("XRAY_TUN_FD", strconv.Itoa(tunFd))
 	}
-	cfg, err := xrayconf.Build(s, xrayconf.Options{
+	opts := xrayconf.Options{
 		HTTPPort:  HTTPPort,
 		SOCKSPort: SOCKSPort,
 		TUN:       tunFd >= 0,
 		LogPath:   logPath,
-	})
+	}
+	if s.Protocol == "ssh" {
+		// Kite is excluded from its own VPN, so the bridge reaches the SSH
+		// server directly.
+		b, err := sshbridge.Start(s)
+		if err != nil {
+			return err
+		}
+		bridge = b
+		opts.SSHBridgePort = b.Port
+	}
+	cfg, err := xrayconf.Build(s, opts)
 	if err != nil {
 		return err
 	}
@@ -217,6 +231,8 @@ func Stop() error {
 	}
 	err := instance.Close()
 	instance, upCount, dnCount = nil, nil, nil
+	bridge.Close()
+	bridge = nil
 	releaseTun()
 	return err
 }
@@ -227,6 +243,9 @@ func Stop() error {
 // in place by /dev/null: the tunnel is released, stray writes vanish, and
 // reads hit EOF so the goroutines exit.
 var tunFds []int
+
+// bridge forwards xray's proxy traffic over SSH for "ssh" servers.
+var bridge *sshbridge.Bridge
 
 func releaseTun() {
 	if len(tunFds) == 0 {

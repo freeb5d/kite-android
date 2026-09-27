@@ -14,6 +14,10 @@ const languages = <(String, String)>[
 
 const Map<String, Map<String, String>> _strings = {
   "en": {
+    "username": "Username",
+    "privateKey": "Private key",
+    "keyPassphrase": "Key passphrase",
+    "hostKey": "Host key (optional)",
     "portHopping": "Port hopping",
     "pinSHA256": "Certificate pin (SHA-256)",
     "obfs": "Obfuscation",
@@ -157,6 +161,10 @@ const Map<String, Map<String, String>> _strings = {
     "skippedEntries": "Imported {0} servers ({1} unsupported entries skipped).",
   },
   "zh": {
+    "username": "用户名",
+    "privateKey": "私钥",
+    "keyPassphrase": "私钥密码",
+    "hostKey": "主机密钥（可选）",
     "portHopping": "端口跳跃",
     "pinSHA256": "证书固定 (SHA-256)",
     "obfs": "混淆",
@@ -300,6 +308,10 @@ const Map<String, Map<String, String>> _strings = {
     "skippedEntries": "已导入 {0} 个服务器（跳过 {1} 个不支持的条目）。",
   },
   "fa": {
+    "username": "نام کاربری",
+    "privateKey": "کلید خصوصی",
+    "keyPassphrase": "رمز کلید",
+    "hostKey": "کلید میزبان (اختیاری)",
     "portHopping": "پرش پورت",
     "pinSHA256": "پین گواهی (SHA-256)",
     "obfs": "مبهم‌سازی",
@@ -443,6 +455,10 @@ const Map<String, Map<String, String>> _strings = {
     "skippedEntries": "{0} سرور وارد شد ({1} مورد پشتیبانی‌نشده رد شد).",
   },
   "tr": {
+    "username": "Kullanıcı adı",
+    "privateKey": "Özel anahtar",
+    "keyPassphrase": "Anahtar parolası",
+    "hostKey": "Sunucu anahtarı (isteğe bağlı)",
     "portHopping": "Port atlama",
     "pinSHA256": "Sertifika sabitleme (SHA-256)",
     "obfs": "Gizleme",
@@ -586,6 +602,10 @@ const Map<String, Map<String, String>> _strings = {
     "skippedEntries": "{0} sunucu içe aktarıldı ({1} desteklenmeyen girdi atlandı).",
   },
   "ar": {
+    "username": "اسم المستخدم",
+    "privateKey": "المفتاح الخاص",
+    "keyPassphrase": "عبارة مرور المفتاح",
+    "hostKey": "مفتاح المضيف (اختياري)",
     "portHopping": "تنقّل المنافذ",
     "pinSHA256": "تثبيت الشهادة (SHA-256)",
     "obfs": "التمويه",
@@ -729,6 +749,10 @@ const Map<String, Map<String, String>> _strings = {
     "skippedEntries": "تم استيراد {0} خوادم (تم تخطي {1} إدخالات غير مدعومة).",
   },
   "fr": {
+    "username": "Nom d’utilisateur",
+    "privateKey": "Clé privée",
+    "keyPassphrase": "Phrase secrète de la clé",
+    "hostKey": "Clé d’hôte (facultatif)",
     "portHopping": "Saut de ports",
     "pinSHA256": "Épinglage du certificat (SHA-256)",
     "obfs": "Obfuscation",
@@ -872,6 +896,10 @@ const Map<String, Map<String, String>> _strings = {
     "skippedEntries": "{0} serveurs importés ({1} entrées non prises en charge ignorées).",
   },
   "de": {
+    "username": "Benutzername",
+    "privateKey": "Privater Schlüssel",
+    "keyPassphrase": "Schlüssel-Passphrase",
+    "hostKey": "Host-Schlüssel (optional)",
     "portHopping": "Port-Hopping",
     "pinSHA256": "Zertifikat-Pin (SHA-256)",
     "obfs": "Verschleierung",
@@ -1015,6 +1043,10 @@ const Map<String, Map<String, String>> _strings = {
     "skippedEntries": "{0} Server importiert ({1} nicht unterstützte Einträge übersprungen).",
   },
   "ru": {
+    "username": "Имя пользователя",
+    "privateKey": "Закрытый ключ",
+    "keyPassphrase": "Пароль ключа",
+    "hostKey": "Ключ хоста (необязательно)",
     "portHopping": "Смена портов",
     "pinSHA256": "Пин сертификата (SHA-256)",
     "obfs": "Обфускация",
