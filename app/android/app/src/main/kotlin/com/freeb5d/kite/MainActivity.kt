@@ -92,6 +92,11 @@ class MainActivity : FlutterActivity() {
             "fetchSubscription" -> background(result) { Kitecore.fetchSubscription(call.arguments as String) }
             "shareLink" -> background(result) { Kitecore.shareLink(call.arguments as String) }
             "traffic" -> result.success(Kitecore.traffic())
+            "countryName" -> {
+                val args = call.arguments as List<*>
+                val name = java.util.Locale("", args[0] as String).getDisplayCountry(java.util.Locale(args[1] as String))
+                result.success(name)
+            }
             "test" -> background(result) { Kitecore.testConnection() }
             "ping" -> background(result) {
                 try {

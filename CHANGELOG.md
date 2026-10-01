@@ -1,5 +1,11 @@
 # Changelog
 
+## 🗺️ v0.9.0 — Connection map
+
+- **Test connection** now shows a map zoomed onto the country your traffic exits from, with
+  that country highlighted, next to a card with its flag, name (in your language), your IP
+  and the delay. The map is built in (Natural Earth, public domain), so it works offline.
+
 ## 🧩 v0.8.0 — More transports and ECH
 
 - **New transports**: mKCP (header type and seed), HTTPUpgrade, XHTTP (mode and advanced

@@ -11,6 +11,7 @@ import 'editor.dart';
 import 'i18n.dart';
 import 'lan_share.dart';
 import 'scan.dart';
+import 'world_map.dart';
 import 'store.dart';
 
 const accent = Color(0xFF6366F1);
@@ -694,6 +695,12 @@ class _HomePageState extends State<HomePage> {
     });
     try {
       final r = await Core.test();
+      final code = '${r['country'] ?? ''}';
+      if (code.length == 2) {
+        try {
+          r['countryName'] = await Core.countryName(code, widget.lang);
+        } catch (_) {}
+      }
       if (mounted) setState(() => testResult = {'ok': true, ...r});
     } catch (e) {
       if (mounted) setState(() => testResult = {'ok': false, 'text': _err(e)});
@@ -1154,17 +1161,44 @@ class _HomePageState extends State<HomePage> {
     final r = testResult!;
     final ok = r['ok'] == true;
     final country = '${r['country'] ?? ''}';
+    if (ok) {
+      return Padding(
+        padding: const EdgeInsets.only(top: 12),
+        child: ConstrainedBox(
+          constraints: const BoxConstraints(maxWidth: 480),
+          child: WorldMap(
+            country: country,
+            overlay: Align(
+              alignment: AlignmentDirectional.centerEnd,
+              child: Container(
+                margin: const EdgeInsetsDirectional.only(end: 10),
+                padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
+                constraints: const BoxConstraints(maxWidth: 190),
+                decoration: BoxDecoration(
+                  color: scheme.surfaceContainerHigh,
+                  borderRadius: BorderRadius.circular(10),
+                  boxShadow: const [BoxShadow(blurRadius: 8, color: Colors.black26)],
+                ),
+                child: Column(mainAxisSize: MainAxisSize.min, crossAxisAlignment: CrossAxisAlignment.start, children: [
+                  Text('${_flag(country)}  ${r['countryName'] ?? country}',
+                      maxLines: 1, overflow: TextOverflow.ellipsis, style: const TextStyle(fontWeight: FontWeight.w700)),
+                  const SizedBox(height: 4),
+                  Text(t('yourIp'), style: TextStyle(fontSize: 11, color: scheme.onSurfaceVariant)),
+                  Text('${r['ip']}', style: TextStyle(fontSize: 12, color: scheme.primary, fontWeight: FontWeight.w600)),
+                  const SizedBox(height: 2),
+                  Text('${r['delayMs']} ms', style: const TextStyle(fontSize: 12, color: Colors.green)),
+                ]),
+              ),
+            ),
+          ),
+        ),
+      );
+    }
     return Container(
       margin: const EdgeInsets.only(top: 12),
       padding: const EdgeInsets.all(10),
-      decoration: BoxDecoration(
-        color: ok ? Colors.green.withValues(alpha: 0.15) : scheme.errorContainer,
-        borderRadius: BorderRadius.circular(8),
-      ),
-      child: Text(
-        ok ? '${_flag(country)} ${r['ip']} $country · ${r['delayMs']}ms' : '✗ ${r['text']}',
-        style: const TextStyle(fontSize: 12),
-      ),
+      decoration: BoxDecoration(color: scheme.errorContainer, borderRadius: BorderRadius.circular(8)),
+      child: Text('✗ ${r['text']}', style: const TextStyle(fontSize: 12)),
     );
   }
 

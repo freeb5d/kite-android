@@ -23,6 +23,7 @@ flutter:
   uses-material-design: true
   assets:
     - assets/logo.png
+    - assets/worldmap.json
   fonts:
     - family: Vazirmatn
       fonts:

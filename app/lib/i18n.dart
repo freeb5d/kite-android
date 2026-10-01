@@ -14,6 +14,7 @@ const languages = <(String, String)>[
 
 const Map<String, Map<String, String>> _strings = {
   "en": {
+    "yourIp": "Your IP",
     "mode": "Mode",
     "xhttpExtra": "XHTTP extra (JSON)",
     "seed": "mKCP seed",
@@ -166,6 +167,7 @@ const Map<String, Map<String, String>> _strings = {
     "skippedEntries": "Imported {0} servers ({1} unsupported entries skipped).",
   },
   "zh": {
+    "yourIp": "你的 IP",
     "mode": "模式",
     "xhttpExtra": "XHTTP 额外参数 (JSON)",
     "seed": "mKCP 种子",
@@ -318,6 +320,7 @@ const Map<String, Map<String, String>> _strings = {
     "skippedEntries": "已导入 {0} 个服务器（跳过 {1} 个不支持的条目）。",
   },
   "fa": {
+    "yourIp": "آی‌پی شما",
     "mode": "حالت",
     "xhttpExtra": "تنظیمات اضافی XHTTP (JSON)",
     "seed": "Seed در mKCP",
@@ -470,6 +473,7 @@ const Map<String, Map<String, String>> _strings = {
     "skippedEntries": "{0} سرور وارد شد ({1} مورد پشتیبانی‌نشده رد شد).",
   },
   "tr": {
+    "yourIp": "IP adresiniz",
     "mode": "Mod",
     "xhttpExtra": "XHTTP ek ayarları (JSON)",
     "seed": "mKCP seed",
@@ -622,6 +626,7 @@ const Map<String, Map<String, String>> _strings = {
     "skippedEntries": "{0} sunucu içe aktarıldı ({1} desteklenmeyen girdi atlandı).",
   },
   "ar": {
+    "yourIp": "عنوان IP الخاص بك",
     "mode": "الوضع",
     "xhttpExtra": "إعدادات XHTTP الإضافية (JSON)",
     "seed": "بذرة mKCP",
@@ -774,6 +779,7 @@ const Map<String, Map<String, String>> _strings = {
     "skippedEntries": "تم استيراد {0} خوادم (تم تخطي {1} إدخالات غير مدعومة).",
   },
   "fr": {
+    "yourIp": "Votre IP",
     "mode": "Mode",
     "xhttpExtra": "Options XHTTP (JSON)",
     "seed": "Graine mKCP",
@@ -926,6 +932,7 @@ const Map<String, Map<String, String>> _strings = {
     "skippedEntries": "{0} serveurs importés ({1} entrées non prises en charge ignorées).",
   },
   "de": {
+    "yourIp": "Deine IP",
     "mode": "Modus",
     "xhttpExtra": "XHTTP-Extras (JSON)",
     "seed": "mKCP-Seed",
@@ -1078,6 +1085,7 @@ const Map<String, Map<String, String>> _strings = {
     "skippedEntries": "{0} Server importiert ({1} nicht unterstützte Einträge übersprungen).",
   },
   "ru": {
+    "yourIp": "Ваш IP",
     "mode": "Режим",
     "xhttpExtra": "Доп. параметры XHTTP (JSON)",
     "seed": "Seed mKCP",
