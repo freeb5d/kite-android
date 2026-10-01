@@ -45,13 +45,29 @@ class _MapData {
 
 const _aspect = 2.2;
 
+/// The map window around [code] in map units (x, y, width), and whether the
+/// country lands on the right half — then the info card goes left so it
+/// never covers it (e.g. Australia or Japan, at the map's edge).
+({double x, double y, double w, bool cardOnLeft}) _view(_MapData data, String code) {
+  final b = data.boxes[code];
+  if (b == null) return (x: 0, y: 0, w: data.w, cardOnLeft: false);
+  final w = min(data.w, max(max(b.width * 3.2, b.height * 2 * _aspect), 240)).toDouble();
+  final h = w / _aspect;
+  final cx = b.center.dx + w * 0.16;
+  final x = (cx - w / 2).clamp(0, data.w - w).toDouble();
+  final y = (b.center.dy - h / 2).clamp(0, max(0, data.h - h)).toDouble();
+  return (x: x, y: y, w: w, cardOnLeft: (b.center.dx - x) / w > 0.5);
+}
+
 /// A map zoomed onto [country] (ISO 3166-1 alpha-2), which is highlighted.
 /// [overlay] is drawn on top, e.g. an info card.
 class WorldMap extends StatelessWidget {
   const WorldMap({super.key, required this.country, this.overlay});
 
   final String country;
-  final Widget? overlay;
+
+  /// Builds the overlay; `cardOnLeft` says which side keeps the country clear.
+  final Widget Function(bool cardOnLeft)? overlay;
 
   @override
   Widget build(BuildContext context) {
@@ -77,7 +93,7 @@ class WorldMap extends StatelessWidget {
                     highlightBorder: dark ? scheme.primaryContainer : scheme.onPrimaryContainer,
                   ),
                 ),
-              ?overlay,
+              if (snap.hasData && overlay != null) overlay!(_view(snap.data!, country.toUpperCase()).cardOnLeft),
             ]),
           ),
         ),
@@ -96,17 +112,8 @@ class _MapPainter extends CustomPainter {
 
   @override
   void paint(Canvas canvas, Size size) {
-    // View window in map units: ~3x the country, country left of centre
-    // (the info card sits on the right), clamped to the map.
-    final b = data.boxes[code];
-    double vw = data.w, vx = 0, vy = 0;
-    if (b != null) {
-      vw = min(data.w, max(max(b.width * 3.2, b.height * 3.2 * _aspect), 240));
-      final vh = vw / _aspect;
-      final cx = b.center.dx + vw * 0.16;
-      vx = (cx - vw / 2).clamp(0, data.w - vw).toDouble();
-      vy = (b.center.dy - vh / 2).clamp(0, max(0, data.h - vh)).toDouble();
-    }
+    final v = _view(data, code);
+    final vw = v.w, vx = v.x, vy = v.y;
     final scale = size.width / vw;
     canvas.save();
     canvas.scale(scale);

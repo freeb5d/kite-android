@@ -1,5 +1,11 @@
 # Changelog
 
+## 🗺️ v0.9.3 — Map fix for countries at the edge
+
+- The info card on the connection map moves to the left when the country is on the right
+  (Australia, Japan, New Zealand…), so it no longer hides the highlighted country.
+- Tall countries are zoomed in closer.
+
 ## 🔀 v0.9.2 — Switch servers in one tap
 
 - Tapping another server while connected switches the connection to it right away.

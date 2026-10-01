@@ -1206,10 +1206,10 @@ class _HomePageState extends State<HomePage> {
           constraints: const BoxConstraints(maxWidth: 480),
           child: WorldMap(
             country: country,
-            overlay: Align(
-              alignment: AlignmentDirectional.centerEnd,
+            overlay: (cardOnLeft) => Align(
+              alignment: cardOnLeft ? Alignment.centerLeft : Alignment.centerRight,
               child: Container(
-                margin: const EdgeInsetsDirectional.only(end: 10),
+                margin: const EdgeInsets.symmetric(horizontal: 10),
                 padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
                 constraints: const BoxConstraints(maxWidth: 190),
                 decoration: BoxDecoration(
