@@ -1,5 +1,10 @@
 # Changelog
 
+## 🐛 v0.9.1 — Map visible on Android TV
+
+- After a connection test the map scrolls into view, and it can be reached with the remote,
+  so it's no longer hidden below the bottom of the TV screen.
+
 ## 🗺️ v0.9.0 — Connection map
 
 - **Test connection** now shows a map zoomed onto the country your traffic exits from, with

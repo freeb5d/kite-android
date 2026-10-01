@@ -111,6 +111,7 @@ class _HomePageState extends State<HomePage> {
   String mode = Store.getString('mode') ?? 'vpn';
   Map<String, dynamic> status = {'state': 'stopped'};
   Map<String, dynamic>? testResult;
+  final _testResultKey = GlobalKey();
   bool testing = false;
   bool busy = false;
   String error = '';
@@ -702,6 +703,12 @@ class _HomePageState extends State<HomePage> {
         } catch (_) {}
       }
       if (mounted) setState(() => testResult = {'ok': true, ...r});
+      // On TV (and short screens) the map lands below the fold; bring it
+      // into view, since a remote can't scroll to non-focusable content.
+      WidgetsBinding.instance.addPostFrameCallback((_) {
+        final c = _testResultKey.currentContext;
+        if (c != null) Scrollable.ensureVisible(c, duration: const Duration(milliseconds: 300), alignment: 0.5);
+      });
     } catch (e) {
       if (mounted) setState(() => testResult = {'ok': false, 'text': _err(e)});
     } finally {
@@ -1134,7 +1141,16 @@ class _HomePageState extends State<HomePage> {
           decoration: BoxDecoration(color: scheme.errorContainer, borderRadius: BorderRadius.circular(8)),
           child: Text(error, style: TextStyle(color: scheme.onErrorContainer, fontSize: 12)),
         ),
-      if (testResult != null) _testResultBox(scheme),
+      if (testResult != null)
+        Focus(
+          key: _testResultKey,
+          // Focusable so D-pad navigation can move down to (and scroll to) it.
+          onFocusChange: (f) {
+            final c = _testResultKey.currentContext;
+            if (f && c != null) Scrollable.ensureVisible(c, duration: const Duration(milliseconds: 200), alignment: 0.5);
+          },
+          child: _testResultBox(scheme),
+        ),
       if (running) ...[
         const SizedBox(height: 12),
         TextButton.icon(
