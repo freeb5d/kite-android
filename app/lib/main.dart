@@ -664,6 +664,28 @@ class _HomePageState extends State<HomePage> {
 
   // ---------- connection ----------
 
+  /// Tapping another server while connected switches the connection to it
+  /// (the VPN service tears down the old session before starting the new one).
+  Future<void> _pickServer(Server s) async {
+    final id = '${s['id']}';
+    final changed = id != selectedId;
+    _select(id);
+    if (!changed || !running || busy) return;
+    setState(() {
+      error = '';
+      testResult = null;
+      busy = true;
+    });
+    try {
+      await Core.connect(s, mode);
+    } catch (e) {
+      setState(() {
+        busy = false;
+        error = _err(e);
+      });
+    }
+  }
+
   Future<void> _toggle() async {
     setState(() {
       error = '';
@@ -981,7 +1003,7 @@ class _HomePageState extends State<HomePage> {
       margin: EdgeInsets.fromLTRB(indent ? 24 : 8, 3, 8, 3),
       color: isSel ? scheme.primaryContainer : null,
       child: ListTile(
-        onTap: () => _select('${s['id']}'),
+        onTap: () => _pickServer(s),
         leading: isSel && running ? const Icon(Icons.circle, color: Colors.green, size: 12) : null,
         title: Text('${s['name']}', maxLines: 1, overflow: TextOverflow.ellipsis),
         subtitle: Text('${s['protocol']} · ${s['address']}:${s['port']}', maxLines: 1, overflow: TextOverflow.ellipsis),

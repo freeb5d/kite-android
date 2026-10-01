@@ -1,5 +1,9 @@
 # Changelog
 
+## 🔀 v0.9.2 — Switch servers in one tap
+
+- Tapping another server while connected switches the connection to it right away.
+
 ## 🐛 v0.9.1 — Map visible on Android TV
 
 - After a connection test the map scrolls into view, and it can be reached with the remote,
