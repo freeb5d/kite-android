@@ -211,6 +211,18 @@ class _ServerEditorPageState extends State<ServerEditorPage> {
                 _text(t('shortId'), e['sid'], (v) => e['sid'] = v),
                 _text(t('spiderX'), e['spx'], (v) => e['spx'] = v, hint: '/'),
               ],
+              _section(t('muxFragment')),
+              _select(t('mux'), e['mux'] == '1' ? 'on' : 'off', const ['off', 'on'], (v) => e['mux'] = v == 'on' ? '1' : ''),
+              if (e['mux'] == '1')
+                _text(t('muxConcurrency'), e['muxConcurrency'], (v) => e['muxConcurrency'] = v,
+                    hint: '8', keyboard: TextInputType.number),
+              _select(t('fragment'), e['fragment'] == '1' ? 'on' : 'off', const ['off', 'on'],
+                  (v) => e['fragment'] = v == 'on' ? '1' : ''),
+              if (e['fragment'] == '1') ...[
+                _text(t('fragmentPackets'), e['fragmentPackets'], (v) => e['fragmentPackets'] = v, hint: 'tlshello'),
+                _text(t('fragmentLength'), e['fragmentLength'], (v) => e['fragmentLength'] = v, hint: '100-200'),
+                _text(t('fragmentInterval'), e['fragmentInterval'], (v) => e['fragmentInterval'] = v, hint: '10-20'),
+              ],
             ],
             if (error.isNotEmpty)
               Padding(

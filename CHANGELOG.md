@@ -1,5 +1,14 @@
 # Changelog
 
+## ⚙️ v0.10.0 — Mux, fragment and startup sync
+
+- **Mux** — multiplex many connections over one, with adjustable concurrency.
+- **Fragment** — split the TLS ClientHello (or the first packets) into small, delayed
+  pieces to get past SNI-based filtering; packets, length and interval are adjustable.
+  Both are set per server in the editor.
+- **Update subscriptions on startup** — every subscription refreshes when Kite opens. On by
+  default; toggle it in the ⋮ menu next to Ping.
+
 ## 🗺️ v0.9.3 — Map fix for countries at the edge
 
 - The info card on the connection map moves to the left when the country is on the right

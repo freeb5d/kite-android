@@ -122,6 +122,7 @@ class _HomePageState extends State<HomePage> {
     for (final e in (jsonDecode(Store.getString('pings') ?? '{}') as Map).entries) '${e.key}': (e.value as num).toInt(),
   };
   bool sortByDelay = Store.getBool('sortByDelay');
+  bool syncOnStart = Store.getBool('syncOnStart', fallback: true);
   bool cancelPing = false;
   bool pinging = false;
   String pingMode = Store.getString('pingMode') ?? 'tcp';
@@ -375,7 +376,9 @@ class _HomePageState extends State<HomePage> {
       final e = extraOf(g.servers.first);
       final hours = int.tryParse(e['subUpdateHours'] ?? '') ?? 0;
       final at = int.tryParse(e['subUpdatedAt'] ?? '') ?? 0;
-      if (hours > 0 && now - at > hours * 3600) {
+      // On startup every subscription refreshes (unless turned off);
+      // otherwise only those whose provider-set interval has passed.
+      if (syncOnStart || (hours > 0 && now - at > hours * 3600)) {
         try {
           await _importSubscription(g.url, g.id, keepName: g.name);
         } catch (_) {}
@@ -642,6 +645,10 @@ class _HomePageState extends State<HomePage> {
               setState(() => sortByDelay = !sortByDelay);
               Store.setBool('sortByDelay', sortByDelay);
             }
+            if (v == 'syncOnStart') {
+              setState(() => syncOnStart = !syncOnStart);
+              Store.setBool('syncOnStart', syncOnStart);
+            }
             if (v == 'removeFailed') _removeFailed();
             if (v == 'clear') {
               setState(pings.clear);
@@ -650,6 +657,7 @@ class _HomePageState extends State<HomePage> {
           },
           itemBuilder: (_) => [
             CheckedPopupMenuItem(value: 'sort', checked: sortByDelay, child: Text(t('sortByDelay'))),
+            CheckedPopupMenuItem(value: 'syncOnStart', checked: syncOnStart, child: Text(t('syncOnStart'))),
             PopupMenuItem(
               value: 'removeFailed',
               enabled: !pinging && servers.any((s) => pings['${s['id']}'] == -1),
