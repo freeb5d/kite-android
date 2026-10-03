@@ -694,6 +694,12 @@ class _HomePageState extends State<HomePage> {
     }
   }
 
+  static String _duration(int ms) {
+    final total = ms < 0 ? 0 : ms ~/ 1000;
+    String two(int n) => n.toString().padLeft(2, '0');
+    return '${two(total ~/ 3600)}:${two(total % 3600 ~/ 60)}:${two(total % 60)}';
+  }
+
   Future<void> _toggle() async {
     setState(() {
       error = '';
@@ -1153,6 +1159,15 @@ class _HomePageState extends State<HomePage> {
       ),
       const SizedBox(height: 12),
       Text(stateText, style: theme.textTheme.titleSmall),
+      // Refreshed every second by the live-traffic timer while connected.
+      if (running && status['since'] is num)
+        Text(
+          _duration(DateTime.now().millisecondsSinceEpoch - (status['since'] as num).toInt()),
+          style: theme.textTheme.titleLarge?.copyWith(
+            color: scheme.primary,
+            fontFeatures: const [FontFeature.tabularFigures()],
+          ),
+        ),
       if (running)
         Text(status['mode'] == 'vpn' ? t('tunAdapterAllTraffic') : 'HTTP 127.0.0.1:10809 · SOCKS5 127.0.0.1:10808',
             style: theme.textTheme.bodySmall),

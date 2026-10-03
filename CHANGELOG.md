@@ -1,5 +1,11 @@
 # Changelog
 
+## ⏱️ v0.10.1 — Connection timer
+
+- While connected, a timer under "Connected" shows how long you've been connected to the
+  current server; it keeps counting if you close and reopen the app, and restarts when you
+  switch servers.
+
 ## ⚙️ v0.10.0 — Mux, fragment and startup sync
 
 - **Mux** — multiplex many connections over one, with adjustable concurrency.

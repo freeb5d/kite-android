@@ -102,7 +102,7 @@ class KiteVpnService : VpnService() {
                     fd = pfd.detachFd().toLong()
                 }
                 Kitecore.start(server, fd, log.absolutePath)
-                publish(mapOf("state" to "running", "server" to name, "mode" to mode))
+                publish(mapOf("state" to "running", "server" to name, "mode" to mode, "since" to System.currentTimeMillis()))
             } catch (e: Exception) {
                 stopEngine()
                 publish(mapOf("state" to "error", "server" to name, "mode" to mode, "message" to (e.message ?: e.toString())))
