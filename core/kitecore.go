@@ -29,6 +29,7 @@ import (
 	"github.com/xtls/xray-core/infra/conf/serial"
 	_ "github.com/xtls/xray-core/main/distro/all"
 
+	"github.com/freeb5d/kite/pkg/conntrack"
 	"github.com/freeb5d/kite/pkg/probe"
 	"github.com/freeb5d/kite/pkg/profile"
 	"github.com/freeb5d/kite/pkg/sshbridge"
@@ -160,6 +161,7 @@ func Start(serverJSON string, tunFd int, logPath string) error {
 		return errors.New("already connected")
 	}
 
+	conntrack.Install()
 	if tunFd >= 0 {
 		tunFds = append(tunFds, tunFd)
 	}
@@ -231,6 +233,9 @@ func Stop() error {
 	}
 	err := instance.Close()
 	instance, upCount, dnCount = nil, nil, nil
+	// Already-open connections would otherwise keep using the old server
+	// (e.g. the previous exit country) until they go idle.
+	conntrack.CloseAll()
 	bridge.Close()
 	bridge = nil
 	releaseTun()

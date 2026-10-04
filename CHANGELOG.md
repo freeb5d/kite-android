@@ -1,5 +1,11 @@
 # Changelog
 
+## 🐛 v0.10.2 — Clean switch between servers
+
+- Disconnecting or switching servers now closes every open connection immediately.
+  Before, connections that were already open (e.g. a browser tab) kept going through the
+  previous server for a few minutes, so sites still showed the old location.
+
 ## ⏱️ v0.10.1 — Connection timer
 
 - While connected, a timer under "Connected" shows how long you've been connected to the
