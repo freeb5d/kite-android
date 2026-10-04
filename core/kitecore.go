@@ -187,6 +187,8 @@ func Start(serverJSON string, tunFd int, logPath string) error {
 		SOCKSPort: SOCKSPort,
 		TUN:       tunFd >= 0,
 		LogPath:   logPath,
+		// Kite is excluded from its own VPN, so direct sockets bypass it.
+		DirectPrivate: true,
 	}
 	if s.Protocol == "ssh" {
 		// Kite is excluded from its own VPN, so the bridge reaches the SSH

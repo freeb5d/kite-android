@@ -1,5 +1,17 @@
 # Changelog
 
+## ⚡ v0.11.0 — Right exit location, faster DNS
+
+- **Fixed: apps exiting through the wrong country.** Traffic from the VPN reached the
+  server as bare IP addresses, so servers that pick the exit location by site name sent it
+  out of their default location (e.g. Germany instead of the selected Finland), even though
+  Kite's own connection test showed the right country. Kite now reads the site name from
+  each connection (sniffing) and sends that instead.
+- **Faster DNS** — lookups are cached and share one encrypted DNS-over-HTTPS connection
+  through the server, instead of every lookup opening its own connection.
+- Local network addresses (Wi-Fi LAN, your carrier's internal DNS) now go direct instead
+  of through the server.
+
 ## 🐛 v0.10.2 — Clean switch between servers
 
 - Disconnecting or switching servers now closes every open connection immediately.
