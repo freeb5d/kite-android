@@ -1,5 +1,11 @@
 # Changelog
 
+## 🐛 v0.11.1 — QUIC goes over TCP
+
+- In VPN mode, QUIC (HTTP/3 over UDP 443) is blocked, so browsers immediately use TCP.
+  Many servers send UDP out of a different location than TCP, which made browsers show the
+  wrong country even with the right server selected.
+
 ## ⚡ v0.11.0 — Right exit location, faster DNS
 
 - **Fixed: apps exiting through the wrong country.** Traffic from the VPN reached the
