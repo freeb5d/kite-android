@@ -1,5 +1,10 @@
 # Changelog
 
+## 📋 v0.12.0 — Import from clipboard
+
+- **Import from clipboard** — a new button in the top bar adds whatever share links or
+  subscription URL you copied, in one tap.
+
 ## 🐛 v0.11.1 — QUIC goes over TCP
 
 - In VPN mode, QUIC (HTTP/3 over UDP 443) is blocked, so browsers immediately use TCP.

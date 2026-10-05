@@ -305,6 +305,21 @@ class _HomePageState extends State<HomePage> {
     }
   }
 
+  /// One tap: add whatever share links or subscription URL are on the clipboard.
+  Future<void> _importClipboard() async {
+    final text = (await Clipboard.getData(Clipboard.kTextPlain))?.text?.trim() ?? '';
+    if (text.isEmpty) {
+      _flash(t('clipboardEmpty'));
+      return;
+    }
+    if (!RegExp(r'^https?://', caseSensitive: false).hasMatch(text) && !text.contains('://')) {
+      _flash(t('clipboardNoLinks'));
+      return;
+    }
+    final n = await _addFromText(text);
+    if (n > 0) _flash(t('received_n', [n]));
+  }
+
   /// Phone side: scan the TV's code and post [text] to it.
   Future<void> _sendToTv(Future<String> Function() text) async {
     final code = await Navigator.of(context).push<String>(
@@ -959,6 +974,7 @@ class _HomePageState extends State<HomePage> {
           title: const Text('Kite'),
           actions: [
             IconButton(tooltip: t('addServer'), icon: const Icon(Icons.add), onPressed: _addDialog),
+            IconButton(tooltip: t('importClipboard'), icon: const Icon(Icons.content_paste), onPressed: _importClipboard),
             if (info['isTv'] == true)
               IconButton(tooltip: t('receiveFromPhone'), icon: const Icon(Icons.qr_code_2), onPressed: _receiveFromPhone),
             IconButton(tooltip: t('showLog'), icon: const Icon(Icons.terminal), onPressed: _showLog),

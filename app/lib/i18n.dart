@@ -14,6 +14,9 @@ const languages = <(String, String)>[
 
 const Map<String, Map<String, String>> _strings = {
   "en": {
+    "importClipboard": "Import from clipboard",
+    "clipboardEmpty": "Clipboard is empty",
+    "clipboardNoLinks": "No share links or subscription URL in the clipboard",
     "muxFragment": "Mux & fragment",
     "mux": "Mux",
     "muxConcurrency": "Mux concurrency",
@@ -175,6 +178,9 @@ const Map<String, Map<String, String>> _strings = {
     "skippedEntries": "Imported {0} servers ({1} unsupported entries skipped).",
   },
   "zh": {
+    "importClipboard": "从剪贴板导入",
+    "clipboardEmpty": "剪贴板为空",
+    "clipboardNoLinks": "剪贴板中没有分享链接或订阅地址",
     "muxFragment": "多路复用与分片",
     "mux": "多路复用 (Mux)",
     "muxConcurrency": "Mux 并发数",
@@ -336,6 +342,9 @@ const Map<String, Map<String, String>> _strings = {
     "skippedEntries": "已导入 {0} 个服务器（跳过 {1} 个不支持的条目）。",
   },
   "fa": {
+    "importClipboard": "افزودن از کلیپ‌بورد",
+    "clipboardEmpty": "کلیپ‌بورد خالی است",
+    "clipboardNoLinks": "در کلیپ‌بورد لینک کانفیگ یا اشتراک پیدا نشد",
     "muxFragment": "Mux و فرگمنت",
     "mux": "Mux",
     "muxConcurrency": "هم‌زمانی Mux",
@@ -497,6 +506,9 @@ const Map<String, Map<String, String>> _strings = {
     "skippedEntries": "{0} سرور وارد شد ({1} مورد پشتیبانی‌نشده رد شد).",
   },
   "tr": {
+    "importClipboard": "Panodan içe aktar",
+    "clipboardEmpty": "Pano boş",
+    "clipboardNoLinks": "Panoda paylaşım bağlantısı veya abonelik adresi yok",
     "muxFragment": "Mux ve parçalama",
     "mux": "Mux",
     "muxConcurrency": "Mux eşzamanlılığı",
@@ -658,6 +670,9 @@ const Map<String, Map<String, String>> _strings = {
     "skippedEntries": "{0} sunucu içe aktarıldı ({1} desteklenmeyen girdi atlandı).",
   },
   "ar": {
+    "importClipboard": "استيراد من الحافظة",
+    "clipboardEmpty": "الحافظة فارغة",
+    "clipboardNoLinks": "لا توجد روابط مشاركة أو رابط اشتراك في الحافظة",
     "muxFragment": "Mux والتجزئة",
     "mux": "Mux",
     "muxConcurrency": "تزامن Mux",
@@ -819,6 +834,9 @@ const Map<String, Map<String, String>> _strings = {
     "skippedEntries": "تم استيراد {0} خوادم (تم تخطي {1} إدخالات غير مدعومة).",
   },
   "fr": {
+    "importClipboard": "Importer depuis le presse-papiers",
+    "clipboardEmpty": "Le presse-papiers est vide",
+    "clipboardNoLinks": "Aucun lien de partage ni URL d’abonnement dans le presse-papiers",
     "muxFragment": "Mux et fragmentation",
     "mux": "Mux",
     "muxConcurrency": "Concurrence Mux",
@@ -980,6 +998,9 @@ const Map<String, Map<String, String>> _strings = {
     "skippedEntries": "{0} serveurs importés ({1} entrées non prises en charge ignorées).",
   },
   "de": {
+    "importClipboard": "Aus Zwischenablage importieren",
+    "clipboardEmpty": "Zwischenablage ist leer",
+    "clipboardNoLinks": "Keine Freigabelinks oder Abo-URL in der Zwischenablage",
     "muxFragment": "Mux & Fragmentierung",
     "mux": "Mux",
     "muxConcurrency": "Mux-Parallelität",
@@ -1141,6 +1162,9 @@ const Map<String, Map<String, String>> _strings = {
     "skippedEntries": "{0} Server importiert ({1} nicht unterstützte Einträge übersprungen).",
   },
   "ru": {
+    "importClipboard": "Импорт из буфера обмена",
+    "clipboardEmpty": "Буфер обмена пуст",
+    "clipboardNoLinks": "В буфере обмена нет ссылок или адреса подписки",
     "muxFragment": "Mux и фрагментация",
     "mux": "Mux",
     "muxConcurrency": "Параллелизм Mux",
