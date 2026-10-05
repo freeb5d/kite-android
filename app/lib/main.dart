@@ -103,6 +103,7 @@ class _Group {
   final List<Server> servers = [];
   Map<String, dynamic>? usage;
   List<String> notes = [];
+  String support = '';
 }
 
 class _HomePageState extends State<HomePage> {
@@ -200,6 +201,7 @@ class _HomePageState extends State<HomePage> {
         try {
           if (e['subUsage'] != null) g.usage = Map<String, dynamic>.from(jsonDecode(e['subUsage']!) as Map);
           if (e['subNotes'] != null) g.notes = List<String>.from(jsonDecode(e['subNotes']!) as List);
+          g.support = e['subSupport'] ?? '';
         } catch (_) {}
         return g;
       });
@@ -368,6 +370,7 @@ class _HomePageState extends State<HomePage> {
       if (res['usage'] != null) e['subUsage'] = jsonEncode(res['usage']);
       if ((res['notes'] as List?)?.isNotEmpty ?? false) e['subNotes'] = jsonEncode(res['notes']);
       if (((res['updateHours'] ?? 0) as num) > 0) e['subUpdateHours'] = '${res['updateHours']}';
+      if ('${res['support'] ?? ''}'.isNotEmpty) e['subSupport'] = '${res['support']}';
       s['extra'] = e;
     }
     final oldSelected = selected;
@@ -1079,6 +1082,22 @@ class _HomePageState extends State<HomePage> {
             subtitle: Text(t('servers_n', [g.servers.length]) + (g.notes.isNotEmpty && u == null ? ' · ${g.notes.join(' · ')}' : ''),
                 maxLines: 1, overflow: TextOverflow.ellipsis),
             trailing: Row(mainAxisSize: MainAxisSize.min, children: [
+              if (g.support.isNotEmpty)
+                IconButton(
+                  tooltip: t('support'),
+                  onPressed: () => Core.openUrl(g.support),
+                  icon: RegExp(r't\.me/|^tg:', caseSensitive: false).hasMatch(g.support)
+                      ? Container(
+                          width: 24,
+                          height: 24,
+                          decoration: const BoxDecoration(color: Color(0xFF2AABEE), shape: BoxShape.circle),
+                          child: Transform.rotate(
+                            angle: -0.6,
+                            child: const Icon(Icons.send, size: 13, color: Colors.white),
+                          ),
+                        )
+                      : const Icon(Icons.support_agent),
+                ),
               IconButton(
                 tooltip: t('syncSubscription'),
                 onPressed: syncing.contains(g.id) ? null : () => _syncGroup(g),

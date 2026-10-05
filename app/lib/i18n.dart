@@ -14,6 +14,7 @@ const languages = <(String, String)>[
 
 const Map<String, Map<String, String>> _strings = {
   "en": {
+    "support": "Support",
     "importClipboard": "Import from clipboard",
     "clipboardEmpty": "Clipboard is empty",
     "clipboardNoLinks": "No share links or subscription URL in the clipboard",
@@ -178,6 +179,7 @@ const Map<String, Map<String, String>> _strings = {
     "skippedEntries": "Imported {0} servers ({1} unsupported entries skipped).",
   },
   "zh": {
+    "support": "客服",
     "importClipboard": "从剪贴板导入",
     "clipboardEmpty": "剪贴板为空",
     "clipboardNoLinks": "剪贴板中没有分享链接或订阅地址",
@@ -342,6 +344,7 @@ const Map<String, Map<String, String>> _strings = {
     "skippedEntries": "已导入 {0} 个服务器（跳过 {1} 个不支持的条目）。",
   },
   "fa": {
+    "support": "پشتیبانی",
     "importClipboard": "افزودن از کلیپ‌بورد",
     "clipboardEmpty": "کلیپ‌بورد خالی است",
     "clipboardNoLinks": "در کلیپ‌بورد لینک کانفیگ یا اشتراک پیدا نشد",
@@ -506,6 +509,7 @@ const Map<String, Map<String, String>> _strings = {
     "skippedEntries": "{0} سرور وارد شد ({1} مورد پشتیبانی‌نشده رد شد).",
   },
   "tr": {
+    "support": "Destek",
     "importClipboard": "Panodan içe aktar",
     "clipboardEmpty": "Pano boş",
     "clipboardNoLinks": "Panoda paylaşım bağlantısı veya abonelik adresi yok",
@@ -670,6 +674,7 @@ const Map<String, Map<String, String>> _strings = {
     "skippedEntries": "{0} sunucu içe aktarıldı ({1} desteklenmeyen girdi atlandı).",
   },
   "ar": {
+    "support": "الدعم",
     "importClipboard": "استيراد من الحافظة",
     "clipboardEmpty": "الحافظة فارغة",
     "clipboardNoLinks": "لا توجد روابط مشاركة أو رابط اشتراك في الحافظة",
@@ -834,6 +839,7 @@ const Map<String, Map<String, String>> _strings = {
     "skippedEntries": "تم استيراد {0} خوادم (تم تخطي {1} إدخالات غير مدعومة).",
   },
   "fr": {
+    "support": "Assistance",
     "importClipboard": "Importer depuis le presse-papiers",
     "clipboardEmpty": "Le presse-papiers est vide",
     "clipboardNoLinks": "Aucun lien de partage ni URL d’abonnement dans le presse-papiers",
@@ -998,6 +1004,7 @@ const Map<String, Map<String, String>> _strings = {
     "skippedEntries": "{0} serveurs importés ({1} entrées non prises en charge ignorées).",
   },
   "de": {
+    "support": "Support",
     "importClipboard": "Aus Zwischenablage importieren",
     "clipboardEmpty": "Zwischenablage ist leer",
     "clipboardNoLinks": "Keine Freigabelinks oder Abo-URL in der Zwischenablage",
@@ -1162,6 +1169,7 @@ const Map<String, Map<String, String>> _strings = {
     "skippedEntries": "{0} Server importiert ({1} nicht unterstützte Einträge übersprungen).",
   },
   "ru": {
+    "support": "Поддержка",
     "importClipboard": "Импорт из буфера обмена",
     "clipboardEmpty": "Буфер обмена пуст",
     "clipboardNoLinks": "В буфере обмена нет ссылок или адреса подписки",

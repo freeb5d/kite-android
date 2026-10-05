@@ -88,6 +88,7 @@ type subscriptionResult struct {
 	Name        string                     `json:"name"`
 	Usage       *profile.SubscriptionUsage `json:"usage,omitempty"`
 	UpdateHours int                        `json:"updateHours"`
+	Support     string                     `json:"support,omitempty"`
 	Skipped     int                        `json:"skipped"`
 }
 
@@ -140,6 +141,7 @@ func FetchSubscription(subURL string) (string, error) {
 		res.Usage = &usage
 	}
 	res.UpdateHours, _ = strconv.Atoi(strings.TrimSpace(resp.Header.Get("Profile-Update-Interval")))
+	res.Support = profile.SupportURL(resp.Header)
 	return toJSON(res)
 }
 

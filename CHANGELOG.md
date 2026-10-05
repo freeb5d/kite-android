@@ -1,5 +1,11 @@
 # Changelog
 
+## 💬 v0.12.1 — Provider support link
+
+- When a subscription provides a support link (the standard `support-url` header), a small
+  Telegram icon appears on the subscription — one tap opens the provider's support chat.
+  Other support links show a support icon instead. Sync the subscription once to pick it up.
+
 ## 📋 v0.12.0 — Import from clipboard
 
 - **Import from clipboard** — a new button in the top bar adds whatever share links or
