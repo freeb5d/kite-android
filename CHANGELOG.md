@@ -4,6 +4,8 @@
 
 - **Import from clipboard** — a new button in the top bar adds whatever share links or
   subscription URL you copied, in one tap.
+- Removed site-name sniffing from the VPN again: blocking QUIC turned out to be the real
+  fix for the wrong exit location.
 
 ## 🐛 v0.11.1 — QUIC goes over TCP
 
