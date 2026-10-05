@@ -1179,8 +1179,8 @@ class _HomePageState extends State<HomePage> {
       Text(mode == 'vpn' ? t('vpnModeHint') : t('proxyModeHint'), style: theme.textTheme.bodySmall, textAlign: TextAlign.center),
       const SizedBox(height: 20),
       SizedBox(
-        width: 132,
-        height: 132,
+        width: info['isTv'] == true ? 104 : 132,
+        height: info['isTv'] == true ? 104 : 132,
         child: FilledButton(
           autofocus: autofocus,
           style: FilledButton.styleFrom(
@@ -1189,7 +1189,7 @@ class _HomePageState extends State<HomePage> {
             foregroundColor: running ? scheme.onPrimary : scheme.onSurfaceVariant,
           ),
           onPressed: (s == null && !running) ? null : _toggle,
-          child: starting ? const CircularProgressIndicator() : const Icon(Icons.power_settings_new, size: 56),
+          child: starting ? const CircularProgressIndicator() : Icon(Icons.power_settings_new, size: info['isTv'] == true ? 44 : 56),
         ),
       ),
       const SizedBox(height: 12),
@@ -1261,7 +1261,8 @@ class _HomePageState extends State<HomePage> {
       return Padding(
         padding: const EdgeInsets.only(top: 12),
         child: ConstrainedBox(
-          constraints: const BoxConstraints(maxWidth: 480),
+          // On TV the panel must fit one screen without scrolling.
+          constraints: BoxConstraints(maxWidth: info['isTv'] == true ? 300 : 480),
           child: WorldMap(
             country: country,
             overlay: (cardOnLeft) => Align(

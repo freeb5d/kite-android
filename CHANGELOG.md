@@ -1,5 +1,10 @@
 # Changelog
 
+## 📺 v0.12.2 — Connection panel fits the TV screen
+
+- On Android TV the connection map and connect button are smaller, so the whole panel —
+  including the connect button — fits on screen without scrolling.
+
 ## 💬 v0.12.1 — Provider support link
 
 - When a subscription provides a support link (the standard `support-url` header), a small
