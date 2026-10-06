@@ -174,7 +174,24 @@ class MainActivity : FlutterActivity() {
             }
         }
         startVpnService(server, mode, name)
+        askBatteryExemption()
         result.success(null)
+    }
+
+    /**
+     * Asks once to exclude Kite from battery optimization; otherwise Android
+     * may stop the VPN service after a few hours in the background.
+     */
+    private fun askBatteryExemption() {
+        if (Build.VERSION.SDK_INT < Build.VERSION_CODES.M) return
+        val prefs = getSharedPreferences("kite_service", MODE_PRIVATE)
+        if (prefs.getBoolean("askedBattery", false)) return
+        val pm = getSystemService(android.os.PowerManager::class.java) ?: return
+        if (pm.isIgnoringBatteryOptimizations(packageName)) return
+        prefs.edit().putBoolean("askedBattery", true).apply()
+        try {
+            startActivity(Intent(Settings.ACTION_REQUEST_IGNORE_BATTERY_OPTIMIZATIONS, Uri.parse("package:$packageName")))
+        } catch (_: Exception) {}
     }
 
     private fun startVpnService(server: String, mode: String, name: String) {

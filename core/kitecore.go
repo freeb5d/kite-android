@@ -273,6 +273,14 @@ func releaseTun() {
 	tunFds = nil
 }
 
+// ResetConnections drops every open outbound connection. Called when the
+// device's network changes: connections made over the old network are dead
+// but would otherwise hang until they time out; apps reconnect at once
+// over the new network instead.
+func ResetConnections() {
+	conntrack.CloseAll()
+}
+
 // IsRunning reports whether xray-core is running.
 func IsRunning() bool {
 	mu.Lock()

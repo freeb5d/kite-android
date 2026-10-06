@@ -1,5 +1,14 @@
 # Changelog
 
+## 🔌 v0.13.0 — Stays connected
+
+- **Survives network changes** — when Wi-Fi drops and comes back (or the phone switches
+  between Wi-Fi and mobile data), Kite moves the VPN to the new network and drops the dead
+  connections at once, so there's no need to disconnect and reconnect.
+- **No more disconnects after a few hours** — if Android stops Kite in the background, it
+  now restarts and reconnects to the same server. On first connect Kite also asks once to be
+  excluded from battery optimization, which is what usually stops VPNs after a while.
+
 ## 📺 v0.12.2 — Connection panel fits the TV screen
 
 - On Android TV the connection map and connect button are smaller, so the whole panel —

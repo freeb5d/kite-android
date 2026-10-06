@@ -7,6 +7,10 @@ import android.app.PendingIntent
 import android.content.Context
 import android.content.Intent
 import android.content.pm.ServiceInfo
+import android.net.ConnectivityManager
+import android.net.Network
+import android.net.NetworkCapabilities
+import android.net.NetworkRequest
 import android.net.VpnService
 import android.os.Build
 import android.os.Handler
@@ -59,18 +63,78 @@ class KiteVpnService : VpnService() {
 
     private var tun: ParcelFileDescriptor? = null
     private var worker: Thread? = null
+    private var vpnMode = false
+    private var netCallback: ConnectivityManager.NetworkCallback? = null
+    private var currentNet: Network? = null
+
+    private val prefs get() = getSharedPreferences("kite_service", MODE_PRIVATE)
 
     override fun onStartCommand(intent: Intent?, flags: Int, startId: Int): Int {
         when (intent?.action) {
-            ACTION_STOP -> stopConnection()
+            ACTION_STOP -> {
+                stopConnection()
+                return START_NOT_STICKY
+            }
             ACTION_START -> {
                 val server = intent.getStringExtra(EXTRA_SERVER) ?: return START_NOT_STICKY
                 val mode = intent.getStringExtra(EXTRA_MODE) ?: "vpn"
                 val name = intent.getStringExtra(EXTRA_NAME) ?: ""
+                prefs.edit().putString("server", server).putString("mode", mode).putString("name", name).apply()
                 startConnection(server, mode, name)
             }
+            else -> {
+                // Restarted by the system after it killed the service (null
+                // intent) or started by always-on VPN: reconnect to the last
+                // server instead of silently staying disconnected.
+                val server = prefs.getString("server", null)
+                if (server == null) {
+                    stopSelf()
+                    return START_NOT_STICKY
+                }
+                startConnection(server, prefs.getString("mode", "vpn") ?: "vpn", prefs.getString("name", "") ?: "")
+            }
         }
-        return START_NOT_STICKY
+        return START_STICKY
+    }
+
+    /**
+     * Follows the device's default network (Wi-Fi <-> mobile, Wi-Fi dropping
+     * and coming back). On a change, tells Android which network the VPN now
+     * runs over and drops the connections made over the old one: they're
+     * dead, and would otherwise stall traffic until the user reconnects.
+     */
+    private fun watchNetwork() {
+        if (netCallback != null) return
+        val cm = getSystemService(ConnectivityManager::class.java) ?: return
+        val cb = object : ConnectivityManager.NetworkCallback() {
+            override fun onAvailable(network: Network) {
+                val changed = currentNet != null && currentNet != network
+                currentNet = network
+                if (vpnMode) {
+                    try { setUnderlyingNetworks(arrayOf(network)) } catch (_: Exception) {}
+                }
+                if (changed) Thread { try { Kitecore.resetConnections() } catch (_: Exception) {} }.start()
+            }
+        }
+        try {
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
+                cm.registerDefaultNetworkCallback(cb)
+            } else {
+                val req = NetworkRequest.Builder()
+                    .addCapability(NetworkCapabilities.NET_CAPABILITY_INTERNET)
+                    .addCapability(NetworkCapabilities.NET_CAPABILITY_NOT_VPN)
+                    .build()
+                cm.registerNetworkCallback(req, cb)
+            }
+            netCallback = cb
+        } catch (_: Exception) {}
+    }
+
+    private fun unwatchNetwork() {
+        val cb = netCallback ?: return
+        try { getSystemService(ConnectivityManager::class.java)?.unregisterNetworkCallback(cb) } catch (_: Exception) {}
+        netCallback = null
+        currentNet = null
     }
 
     private fun startConnection(server: String, mode: String, name: String) {
@@ -102,6 +166,8 @@ class KiteVpnService : VpnService() {
                     fd = pfd.detachFd().toLong()
                 }
                 Kitecore.start(server, fd, log.absolutePath)
+                vpnMode = mode == "vpn"
+                main.post { watchNetwork() }
                 publish(mapOf("state" to "running", "server" to name, "mode" to mode, "since" to System.currentTimeMillis()))
             } catch (e: Exception) {
                 stopEngine()
@@ -119,6 +185,9 @@ class KiteVpnService : VpnService() {
     }
 
     private fun stopConnection() {
+        // The user disconnected: don't reconnect on a system restart.
+        prefs.edit().remove("server").apply()
+        unwatchNetwork()
         stopEngine()
         publish(mapOf("state" to "stopped"))
         stopForegroundCompat()
@@ -131,6 +200,7 @@ class KiteVpnService : VpnService() {
     }
 
     override fun onDestroy() {
+        unwatchNetwork()
         stopEngine()
         if (status["state"] != "error") publish(mapOf("state" to "stopped"))
         super.onDestroy()
