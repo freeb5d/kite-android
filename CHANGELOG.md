@@ -1,5 +1,9 @@
 # Changelog
 
+## 🎨 v0.13.3 — Clean logo
+
+- The Kite logo inside the app no longer has a black square behind its rounded corners.
+
 ## 🐛 v0.13.2 — No more drops after an hour
 
 - Fixed the VPN dropping after an hour or so (most visible on Android TV, without any error
