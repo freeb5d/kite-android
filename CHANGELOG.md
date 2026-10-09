@@ -1,5 +1,9 @@
 # Changelog
 
+## 🎨 v0.13.4 — Smooth logo corners
+
+- Redrew the logo's rounded corners as a clean, even shape.
+
 ## 🎨 v0.13.3 — Clean logo
 
 - The Kite logo inside the app no longer has a black square behind its rounded corners.
