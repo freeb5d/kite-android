@@ -46,6 +46,11 @@ const (
 )
 
 func init() {
+	// TVs and low-end phones have little RAM and Android kills apps that
+	// grow too big; a soft limit makes Go return memory to the system
+	// sooner instead of letting the heap balloon between collections.
+	debug.SetMemoryLimit(160 << 20)
+
 	// Go's resolver reads /etc/resolv.conf, which Android doesn't have, so
 	// name lookups would fail. The app is excluded from its own VPN, so
 	// these queries go out directly.

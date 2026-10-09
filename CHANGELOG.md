@@ -1,5 +1,12 @@
 # Changelog
 
+## 🐛 v0.13.2 — No more drops after an hour
+
+- Fixed the VPN dropping after an hour or so (most visible on Android TV, without any error
+  message): memory slowly grew during long sessions until Android closed Kite. Connections
+  that end on their own are now forgotten right away, and Kite's engine keeps its memory
+  use in check.
+
 ## 🔌 v0.13.1 — Reconnects when Android takes the VPN away
 
 - When the system takes the VPN away on its own (Android TV does this in the background
