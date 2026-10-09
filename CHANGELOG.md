@@ -1,5 +1,13 @@
 # Changelog
 
+## 🔌 v0.13.1 — Reconnects when Android takes the VPN away
+
+- When the system takes the VPN away on its own (Android TV does this in the background
+  after a while), Kite now reconnects to the same server instead of showing
+  "Disconnected" — unless another VPN app took over.
+- When a connection drops without you pressing disconnect, Kite shows why and when (e.g.
+  "Android stopped Kite at 10:42; it reconnected"), to help track down such drops.
+
 ## 🔌 v0.13.0 — Stays connected
 
 - **Survives network changes** — when Wi-Fi drops and comes back (or the phone switches

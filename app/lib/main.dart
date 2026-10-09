@@ -147,6 +147,7 @@ class _HomePageState extends State<HomePage> {
       setState(() {
         status = s;
         if (s['state'] == 'error') error = '${s['message'] ?? ''}';
+        if (s['state'] == 'stopped' || s['state'] == 'running') _showLastStop();
         if (s['state'] != 'starting') busy = false;
       });
       if (s['state'] == 'running') {
@@ -716,6 +717,27 @@ class _HomePageState extends State<HomePage> {
     final total = ms < 0 ? 0 : ms ~/ 1000;
     String two(int n) => n.toString().padLeft(2, '0');
     return '${two(total ~/ 3600)}:${two(total % 3600 ~/ 60)}:${two(total % 60)}';
+  }
+
+  /// Shows why the connection last dropped on its own (and when), e.g.
+  /// "Disconnected by the system at 10:42"; reconnects show it too.
+  Future<void> _showLastStop() async {
+    String? v;
+    try {
+      v = await Core.lastStop();
+    } catch (_) {}
+    if (v == null || !mounted) return;
+    final i = v.indexOf('|');
+    final at = DateTime.fromMillisecondsSinceEpoch(int.tryParse(v.substring(0, i)) ?? 0);
+    final reason = v.substring(i + 1);
+    final hm = '${at.hour.toString().padLeft(2, '0')}:${at.minute.toString().padLeft(2, '0')}';
+    final text = switch (reason) {
+      'revoked' => t('stopRevoked', [hm]),
+      'killed' => t('stopKilled', [hm]),
+      'other_vpn' => t('stopOtherVpn', [hm]),
+      _ => '${t('stopError', [hm])} ${reason.replaceFirst('error: ', '')}',
+    };
+    setState(() => error = text);
   }
 
   Future<void> _toggle() async {

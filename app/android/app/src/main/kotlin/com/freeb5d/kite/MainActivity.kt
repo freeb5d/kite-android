@@ -92,6 +92,12 @@ class MainActivity : FlutterActivity() {
             "fetchSubscription" -> background(result) { Kitecore.fetchSubscription(call.arguments as String) }
             "shareLink" -> background(result) { Kitecore.shareLink(call.arguments as String) }
             "traffic" -> result.success(Kitecore.traffic())
+            "lastStop" -> {
+                // Why the last connection ended on its own ("time|reason"), once.
+                val prefs = getSharedPreferences("kite_service", MODE_PRIVATE)
+                result.success(prefs.getString("lastStop", null))
+                prefs.edit().remove("lastStop").apply()
+            }
             "countryName" -> {
                 val args = call.arguments as List<*>
                 val name = java.util.Locale("", args[0] as String).getDisplayCountry(java.util.Locale(args[1] as String))

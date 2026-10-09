@@ -28,6 +28,10 @@ class Core {
 
   static Future<void> disconnect() => _ch.invokeMethod('disconnect');
 
+  /// Why the last connection ended without the user asking ("ms|reason"), or
+  /// null. Reading it clears it.
+  static Future<String?> lastStop() => _ch.invokeMethod<String>('lastStop');
+
   /// Country name for an ISO code, in [lang] (from the platform's locale data).
   static Future<String> countryName(String code, String lang) async =>
       await _ch.invokeMethod<String>('countryName', [code, lang]) ?? code;

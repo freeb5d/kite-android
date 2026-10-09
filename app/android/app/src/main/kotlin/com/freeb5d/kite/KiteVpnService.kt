@@ -170,6 +170,7 @@ class KiteVpnService : VpnService() {
                 main.post { watchNetwork() }
                 publish(mapOf("state" to "running", "server" to name, "mode" to mode, "since" to System.currentTimeMillis()))
             } catch (e: Exception) {
+                recordStop("error: ${e.message ?: e}")
                 stopEngine()
                 publish(mapOf("state" to "error", "server" to name, "mode" to mode, "message" to (e.message ?: e.toString())))
                 stopForegroundCompat()
@@ -194,12 +195,27 @@ class KiteVpnService : VpnService() {
         stopSelf()
     }
 
+    /** Remembers why the connection ended without the user asking, for the app to show. */
+    private fun recordStop(reason: String) {
+        prefs.edit().putString("lastStop", "${System.currentTimeMillis()}|$reason").apply()
+    }
+
     override fun onRevoke() {
-        // Another VPN app took over, or the user revoked permission.
+        val server = prefs.getString("server", null)
+        // The system can take the VPN away on its own (Android TV does this
+        // in the background). If no other VPN app holds the permission now,
+        // reconnect to the same server instead of staying off.
+        if (server != null && VpnService.prepare(this) == null) {
+            recordStop("revoked")
+            startConnection(server, prefs.getString("mode", "vpn") ?: "vpn", prefs.getString("name", "") ?: "")
+            return
+        }
+        recordStop("other_vpn")
         stopConnection()
     }
 
     override fun onDestroy() {
+        if (prefs.getString("server", null) != null) recordStop("killed")
         unwatchNetwork()
         stopEngine()
         if (status["state"] != "error") publish(mapOf("state" to "stopped"))
