@@ -731,6 +731,10 @@ class _HomePageState extends State<HomePage> {
     final at = DateTime.fromMillisecondsSinceEpoch(int.tryParse(v.substring(0, i)) ?? 0);
     final reason = v.substring(i + 1);
     final hm = '${at.hour.toString().padLeft(2, '0')}:${at.minute.toString().padLeft(2, '0')}';
+    // Dropped without the user asking and still down: reconnect now.
+    if ((reason == 'killed' || reason == 'revoked') && !running && !busy && selected != null) {
+      _toggle();
+    }
     final text = switch (reason) {
       'revoked' => t('stopRevoked', [hm]),
       'killed' => t('stopKilled', [hm]),

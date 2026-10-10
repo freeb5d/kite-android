@@ -14,8 +14,8 @@ const languages = <(String, String)>[
 
 const Map<String, Map<String, String>> _strings = {
   "en": {
-    "stopRevoked": "The system took the VPN away at {0}; Kite reconnected.",
-    "stopKilled": "Android stopped Kite at {0}; it reconnected.",
+    "stopRevoked": "The system took the VPN away at {0}; reconnecting.",
+    "stopKilled": "Android stopped Kite at {0}; reconnecting.",
     "stopOtherVpn": "Disconnected at {0}: another VPN app took over.",
     "stopError": "Disconnected at {0}:",
     "support": "Support",
@@ -183,8 +183,8 @@ const Map<String, Map<String, String>> _strings = {
     "skippedEntries": "Imported {0} servers ({1} unsupported entries skipped).",
   },
   "zh": {
-    "stopRevoked": "系统在 {0} 收回了 VPN，Kite 已重新连接。",
-    "stopKilled": "Android 在 {0} 停止了 Kite，已重新连接。",
+    "stopRevoked": "系统在 {0} 收回了 VPN，正在重新连接。",
+    "stopKilled": "Android 在 {0} 停止了 Kite，正在重新连接。",
     "stopOtherVpn": "{0} 断开：另一个 VPN 应用接管了连接。",
     "stopError": "{0} 断开：",
     "support": "客服",
@@ -352,8 +352,8 @@ const Map<String, Map<String, String>> _strings = {
     "skippedEntries": "已导入 {0} 个服务器（跳过 {1} 个不支持的条目）。",
   },
   "fa": {
-    "stopRevoked": "سیستم در ساعت {0} وی‌پی‌ان را قطع کرد؛ Kite دوباره وصل شد.",
-    "stopKilled": "اندروید در ساعت {0} برنامهٔ Kite را بست؛ دوباره وصل شد.",
+    "stopRevoked": "سیستم در ساعت {0} وی‌پی‌ان را قطع کرد؛ در حال اتصال دوباره.",
+    "stopKilled": "اندروید در ساعت {0} برنامهٔ Kite را بست؛ در حال اتصال دوباره.",
     "stopOtherVpn": "در ساعت {0} قطع شد: یک برنامهٔ VPN دیگر اتصال را گرفت.",
     "stopError": "در ساعت {0} قطع شد:",
     "support": "پشتیبانی",
@@ -521,8 +521,8 @@ const Map<String, Map<String, String>> _strings = {
     "skippedEntries": "{0} سرور وارد شد ({1} مورد پشتیبانی‌نشده رد شد).",
   },
   "tr": {
-    "stopRevoked": "Sistem {0} saatinde VPN'i kapattı; Kite yeniden bağlandı.",
-    "stopKilled": "Android Kite'ı {0} saatinde durdurdu; yeniden bağlandı.",
+    "stopRevoked": "Sistem {0} saatinde VPN'i kapattı; yeniden bağlanıyor.",
+    "stopKilled": "Android Kite'ı {0} saatinde durdurdu; yeniden bağlanıyor.",
     "stopOtherVpn": "{0} saatinde bağlantı kesildi: başka bir VPN uygulaması devraldı.",
     "stopError": "{0} saatinde bağlantı kesildi:",
     "support": "Destek",
@@ -690,8 +690,8 @@ const Map<String, Map<String, String>> _strings = {
     "skippedEntries": "{0} sunucu içe aktarıldı ({1} desteklenmeyen girdi atlandı).",
   },
   "ar": {
-    "stopRevoked": "سحب النظام الـ VPN في {0}؛ أعاد Kite الاتصال.",
-    "stopKilled": "أوقف أندرويد Kite في {0}؛ تمت إعادة الاتصال.",
+    "stopRevoked": "سحب النظام الـ VPN في {0}؛ جارٍ إعادة الاتصال.",
+    "stopKilled": "أوقف أندرويد Kite في {0}؛ جارٍ إعادة الاتصال.",
     "stopOtherVpn": "انقطع الاتصال في {0}: تطبيق VPN آخر تولّى الاتصال.",
     "stopError": "انقطع الاتصال في {0}:",
     "support": "الدعم",
@@ -859,8 +859,8 @@ const Map<String, Map<String, String>> _strings = {
     "skippedEntries": "تم استيراد {0} خوادم (تم تخطي {1} إدخالات غير مدعومة).",
   },
   "fr": {
-    "stopRevoked": "Le système a retiré le VPN à {0} ; Kite s'est reconnecté.",
-    "stopKilled": "Android a arrêté Kite à {0} ; il s'est reconnecté.",
+    "stopRevoked": "Le système a retiré le VPN à {0} ; reconnexion en cours.",
+    "stopKilled": "Android a arrêté Kite à {0} ; reconnexion en cours.",
     "stopOtherVpn": "Déconnecté à {0} : une autre application VPN a pris le relais.",
     "stopError": "Déconnecté à {0} :",
     "support": "Assistance",
@@ -1028,8 +1028,8 @@ const Map<String, Map<String, String>> _strings = {
     "skippedEntries": "{0} serveurs importés ({1} entrées non prises en charge ignorées).",
   },
   "de": {
-    "stopRevoked": "Das System hat das VPN um {0} entzogen; Kite hat sich neu verbunden.",
-    "stopKilled": "Android hat Kite um {0} beendet; es hat sich neu verbunden.",
+    "stopRevoked": "Das System hat das VPN um {0} entzogen; verbinde neu.",
+    "stopKilled": "Android hat Kite um {0} beendet; verbinde neu.",
     "stopOtherVpn": "Um {0} getrennt: eine andere VPN-App hat übernommen.",
     "stopError": "Um {0} getrennt:",
     "support": "Support",
@@ -1197,8 +1197,8 @@ const Map<String, Map<String, String>> _strings = {
     "skippedEntries": "{0} Server importiert ({1} nicht unterstützte Einträge übersprungen).",
   },
   "ru": {
-    "stopRevoked": "Система отключила VPN в {0}; Kite переподключился.",
-    "stopKilled": "Android остановил Kite в {0}; он переподключился.",
+    "stopRevoked": "Система отключила VPN в {0}; переподключение.",
+    "stopKilled": "Android остановил Kite в {0}; переподключение.",
     "stopOtherVpn": "Отключено в {0}: другое VPN-приложение заняло соединение.",
     "stopError": "Отключено в {0}:",
     "support": "Поддержка",

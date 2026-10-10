@@ -1,5 +1,11 @@
 # Changelog
 
+## 🔌 v0.13.5 — Reconnects after Android stops it
+
+- When Android stops Kite's VPN service on its own (Android TV does this after a few
+  hours), Kite now restarts itself a few seconds later and reconnects to the same server.
+- If you open Kite after such a stop, it reconnects right away.
+
 ## 🎨 v0.13.4 — Smooth logo corners
 
 - Redrew the logo's rounded corners as a clean, even shape.

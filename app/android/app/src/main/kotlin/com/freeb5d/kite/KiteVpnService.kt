@@ -3,7 +3,9 @@ package com.freeb5d.kite
 import android.app.Notification
 import android.app.NotificationChannel
 import android.app.NotificationManager
+import android.app.AlarmManager
 import android.app.PendingIntent
+import android.os.SystemClock
 import android.content.Context
 import android.content.Intent
 import android.content.pm.ServiceInfo
@@ -195,6 +197,19 @@ class KiteVpnService : VpnService() {
         stopSelf()
     }
 
+    private fun scheduleRestart() {
+        if (Build.VERSION.SDK_INT < Build.VERSION_CODES.O) return
+        try {
+            val pi = PendingIntent.getForegroundService(
+                this, 7, Intent(this, KiteVpnService::class.java),
+                PendingIntent.FLAG_IMMUTABLE or PendingIntent.FLAG_UPDATE_CURRENT,
+            )
+            getSystemService(AlarmManager::class.java)?.set(
+                AlarmManager.ELAPSED_REALTIME_WAKEUP, SystemClock.elapsedRealtime() + 3000, pi,
+            )
+        } catch (_: Exception) {}
+    }
+
     /** Remembers why the connection ended without the user asking, for the app to show. */
     private fun recordStop(reason: String) {
         prefs.edit().putString("lastStop", "${System.currentTimeMillis()}|$reason").apply()
@@ -215,7 +230,13 @@ class KiteVpnService : VpnService() {
     }
 
     override fun onDestroy() {
-        if (prefs.getString("server", null) != null) recordStop("killed")
+        if (prefs.getString("server", null) != null) {
+            // The system stopped the service without the user disconnecting
+            // (Android TV does this after a while). Android won't restart a
+            // service it stopped itself, so schedule our own restart.
+            recordStop("killed")
+            scheduleRestart()
+        }
         unwatchNetwork()
         stopEngine()
         if (status["state"] != "error") publish(mapOf("state" to "stopped"))
