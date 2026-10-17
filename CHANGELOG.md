@@ -1,5 +1,10 @@
 # Changelog
 
+## ↩️ v0.14.0 — Back to v0.13.5
+
+- Returns the app to exactly the v0.13.5 code, after later versions opened to a blank screen
+  on some Android TVs. Installs as a normal update, so saved servers are kept.
+
 ## 🐛 v0.13.9 — Blank screen fix
 
 - Fixed the app staying on a blank screen (seen on Android TV): the automatic restart added

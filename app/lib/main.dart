@@ -20,18 +20,6 @@ const repoUrl = 'https://github.com/freeb5d/kite-android';
 
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
-  // In release builds a widget that fails to build shows as a blank area.
-  // Show the error itself instead, so a problem can be reported from a photo.
-  ErrorWidget.builder = (details) => Material(
-        color: const Color(0xFFFFF3F3),
-        child: SingleChildScrollView(
-          padding: const EdgeInsets.all(24),
-          child: Text(
-            'Kite error:\n${details.exceptionAsString()}\n\n${details.stack ?? ''}'.trim(),
-            style: const TextStyle(color: Color(0xFFB00020), fontSize: 14),
-          ),
-        ),
-      );
   await Store.init();
   runApp(const KiteApp());
 }
@@ -348,8 +336,8 @@ class _HomePageState extends State<HomePage> {
     try {
       await sendToReceiver(code, await text());
       _flash(t('sentToTv'));
-    } catch (e) {
-      setState(() => error = '${t('tvUnreachable')} ($code — ${_err(e)})');
+    } catch (_) {
+      setState(() => error = t('tvUnreachable'));
     }
   }
 
@@ -743,6 +731,10 @@ class _HomePageState extends State<HomePage> {
     final at = DateTime.fromMillisecondsSinceEpoch(int.tryParse(v.substring(0, i)) ?? 0);
     final reason = v.substring(i + 1);
     final hm = '${at.hour.toString().padLeft(2, '0')}:${at.minute.toString().padLeft(2, '0')}';
+    // Dropped without the user asking and still down: reconnect now.
+    if ((reason == 'killed' || reason == 'revoked') && !running && !busy && selected != null) {
+      _toggle();
+    }
     final text = switch (reason) {
       'revoked' => t('stopRevoked', [hm]),
       'killed' => t('stopKilled', [hm]),

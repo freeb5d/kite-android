@@ -64,10 +64,7 @@ class KiteVpnService : VpnService() {
     }
 
     private var tun: ParcelFileDescriptor? = null
-    // Engine start/stop can take a while (closing xray waits for its
-    // connections); never on the main thread, which also draws the app's UI.
-    // One thread keeps them in order.
-    private val engine = java.util.concurrent.Executors.newSingleThreadExecutor()
+    private var worker: Thread? = null
     private var vpnMode = false
     private var netCallback: ConnectivityManager.NetworkCallback? = null
     private var currentNet: Network? = null
@@ -145,9 +142,9 @@ class KiteVpnService : VpnService() {
     private fun startConnection(server: String, mode: String, name: String) {
         showNotification(name)
         publish(mapOf("state" to "starting", "server" to name, "mode" to mode))
+        stopEngine()
 
-        engine.execute {
-            stopEngine()
+        worker = Thread {
             try {
                 val log = logFile(this)
                 log.writeText("")
@@ -176,16 +173,12 @@ class KiteVpnService : VpnService() {
                 publish(mapOf("state" to "running", "server" to name, "mode" to mode, "since" to System.currentTimeMillis()))
             } catch (e: Exception) {
                 recordStop("error: ${e.message ?: e}")
-                // A failed start must never feed a restart loop (system
-                // restart, always-on VPN): forget the server until the user
-                // connects again.
-                prefs.edit().remove("server").apply()
                 stopEngine()
                 publish(mapOf("state" to "error", "server" to name, "mode" to mode, "message" to (e.message ?: e.toString())))
                 stopForegroundCompat()
                 stopSelf()
             }
-        }
+        }.also { it.start() }
     }
 
     private fun stopEngine() {
@@ -198,7 +191,7 @@ class KiteVpnService : VpnService() {
         // The user disconnected: don't reconnect on a system restart.
         prefs.edit().remove("server").apply()
         unwatchNetwork()
-        engine.execute { stopEngine() }
+        stopEngine()
         publish(mapOf("state" to "stopped"))
         stopForegroundCompat()
         stopSelf()
@@ -242,10 +235,10 @@ class KiteVpnService : VpnService() {
             // (Android TV does this after a while). Android won't restart a
             // service it stopped itself, so schedule our own restart.
             recordStop("killed")
+            scheduleRestart()
         }
         unwatchNetwork()
-        engine.execute { stopEngine() }
-        engine.shutdown()
+        stopEngine()
         if (status["state"] != "error") publish(mapOf("state" to "stopped"))
         super.onDestroy()
     }
