@@ -1,5 +1,11 @@
 # Changelog
 
+## 🔍 v0.13.6 — Send to TV diagnostics
+
+- The TV's receive screen now shows how many requests reached it and lists all of the TV's
+  network addresses, so another one can be tried if the QR code's address doesn't work.
+- "Could not reach the TV" on the phone now includes the address and the exact error.
+
 ## 🔌 v0.13.5 — Reconnects after Android stops it
 
 - When Android stops Kite's VPN service on its own (Android TV does this after a few

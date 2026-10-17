@@ -22,6 +22,19 @@ Future<void> sendToReceiver(String url, String text) async {
   if (res.statusCode != 200) throw HttpException('HTTP ${res.statusCode}');
 }
 
+/// Every IPv4 address of the device except loopback and Kite's own tunnel,
+/// so the user can try another one if the first doesn't work.
+Future<List<String>> allAddresses() async {
+  final out = <String>[];
+  for (final i in await NetworkInterface.list(type: InternetAddressType.IPv4)) {
+    for (final a in i.addresses) {
+      if (a.isLoopback || a.address.startsWith('10.19.0.')) continue;
+      out.add('${a.address} (${i.name})');
+    }
+  }
+  return out;
+}
+
 /// The device's address on the local network (Wi-Fi / Ethernet), skipping
 /// loopback, link-local and Kite's own VPN tunnel.
 Future<String?> lanAddress() async {
@@ -56,6 +69,8 @@ class ReceivePage extends StatefulWidget {
 class _ReceivePageState extends State<ReceivePage> {
   HttpServer? server;
   String? url;
+  List<String> others = [];
+  int requests = 0;
   String message = '';
   bool failed = false;
 
@@ -79,7 +94,11 @@ class _ReceivePageState extends State<ReceivePage> {
       final token = List.generate(12, (_) => rnd.nextInt(36).toRadixString(36)).join();
       final s = await HttpServer.bind(InternetAddress.anyIPv4, 0);
       server = s;
-      setState(() => url = 'http://$ip:${s.port}$receivePath$token');
+      final all = await allAddresses();
+      setState(() {
+        url = 'http://$ip:${s.port}$receivePath$token';
+        others = [for (final a in all) if (!a.startsWith('$ip ')) 'http://${a.split(' ').first}:${s.port}$receivePath$token  ${a.split(' ').last}'];
+      });
       s.listen((req) => _handle(req, token));
     } catch (e) {
       setState(() {
@@ -90,6 +109,7 @@ class _ReceivePageState extends State<ReceivePage> {
   }
 
   Future<void> _handle(HttpRequest req, String token) async {
+    if (mounted) setState(() => requests++);
     final res = req.response;
     try {
       if (req.uri.path != '$receivePath$token') {
@@ -148,6 +168,13 @@ class _ReceivePageState extends State<ReceivePage> {
               ),
               const SizedBox(height: 16),
               SelectableText(url!, style: theme.textTheme.bodySmall),
+              const SizedBox(height: 4),
+              Text('${t('requestsReceived')}: $requests', style: theme.textTheme.bodySmall),
+              if (others.isNotEmpty) ...[
+                const SizedBox(height: 8),
+                Text(t('otherAddresses'), style: theme.textTheme.labelSmall),
+                for (final o in others) SelectableText(o, style: theme.textTheme.bodySmall),
+              ],
               const SizedBox(height: 12),
               ConstrainedBox(
                 constraints: const BoxConstraints(maxWidth: 480),

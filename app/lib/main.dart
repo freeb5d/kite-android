@@ -336,8 +336,8 @@ class _HomePageState extends State<HomePage> {
     try {
       await sendToReceiver(code, await text());
       _flash(t('sentToTv'));
-    } catch (_) {
-      setState(() => error = t('tvUnreachable'));
+    } catch (e) {
+      setState(() => error = '${t('tvUnreachable')} ($code — ${_err(e)})');
     }
   }
 
