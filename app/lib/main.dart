@@ -27,10 +27,7 @@ Future<void> main() async {
         child: SingleChildScrollView(
           padding: const EdgeInsets.all(24),
           child: Text(
-            'Kite error:
-${details.exceptionAsString()}
-
-${details.stack ?? ''}'.trim(),
+            'Kite error:\n${details.exceptionAsString()}\n\n${details.stack ?? ''}'.trim(),
             style: const TextStyle(color: Color(0xFFB00020), fontSize: 14),
           ),
         ),
