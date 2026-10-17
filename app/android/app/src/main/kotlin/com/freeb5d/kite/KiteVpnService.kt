@@ -176,6 +176,10 @@ class KiteVpnService : VpnService() {
                 publish(mapOf("state" to "running", "server" to name, "mode" to mode, "since" to System.currentTimeMillis()))
             } catch (e: Exception) {
                 recordStop("error: ${e.message ?: e}")
+                // A failed start must never feed a restart loop (system
+                // restart, always-on VPN): forget the server until the user
+                // connects again.
+                prefs.edit().remove("server").apply()
                 stopEngine()
                 publish(mapOf("state" to "error", "server" to name, "mode" to mode, "message" to (e.message ?: e.toString())))
                 stopForegroundCompat()
@@ -238,7 +242,6 @@ class KiteVpnService : VpnService() {
             // (Android TV does this after a while). Android won't restart a
             // service it stopped itself, so schedule our own restart.
             recordStop("killed")
-            scheduleRestart()
         }
         unwatchNetwork()
         engine.execute { stopEngine() }

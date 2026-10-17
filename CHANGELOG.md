@@ -1,5 +1,11 @@
 # Changelog
 
+## 🐛 v0.13.9 — Blank screen fix
+
+- Fixed the app staying on a blank screen (seen on Android TV): the automatic restart added
+  in v0.13.5 could get stuck restarting over and over. It is removed, and a connection that
+  fails to start can no longer trigger any automatic restart.
+
 ## 🔍 v0.13.8 — Visible errors
 
 - If part of the screen fails to draw, Kite now shows the error message there instead of a
