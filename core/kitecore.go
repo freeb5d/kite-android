@@ -153,6 +153,7 @@ func FetchSubscription(subURL string) (string, error) {
 // --- connection ---
 
 var (
+	cmu      sync.Mutex // guards upCount/dnCount only
 	mu       sync.Mutex
 	instance *core.Instance
 	upCount  stats.Counter
@@ -225,11 +226,13 @@ func Start(serverJSON string, tunFd int, logPath string) error {
 	}
 	instance = inst
 	started = true
+	cmu.Lock()
 	upCount, dnCount = nil, nil
 	if sm, ok := inst.GetFeature(stats.ManagerType()).(stats.Manager); ok && sm != nil {
 		upCount = counter(sm, "outbound>>>proxy>>>traffic>>>uplink")
 		dnCount = counter(sm, "outbound>>>proxy>>>traffic>>>downlink")
 	}
+	cmu.Unlock()
 	return nil
 }
 
@@ -240,8 +243,11 @@ func Stop() error {
 	if instance == nil {
 		return nil
 	}
+	cmu.Lock()
+	upCount, dnCount = nil, nil
+	cmu.Unlock()
 	err := instance.Close()
-	instance, upCount, dnCount = nil, nil, nil
+	instance = nil
 	// Already-open connections would otherwise keep using the old server
 	// (e.g. the previous exit country) until they go idle.
 	conntrack.CloseAll()
@@ -295,8 +301,10 @@ func IsRunning() bool {
 
 // Traffic returns {"uplink":n,"downlink":n} cumulative bytes this session.
 func Traffic() string {
-	mu.Lock()
-	defer mu.Unlock()
+	// Own lock: polled every second from the UI, it must never wait for a
+	// slow Start/Stop holding mu.
+	cmu.Lock()
+	defer cmu.Unlock()
 	var up, down int64
 	if upCount != nil {
 		up = upCount.Value()

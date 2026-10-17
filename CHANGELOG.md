@@ -1,5 +1,11 @@
 # Changelog
 
+## 🐛 v0.13.7 — No more blank screen
+
+- Fixed the app opening to a blank screen (seen on Android TV): starting or stopping the
+  connection could block the thread that draws the app. That work now always runs in the
+  background.
+
 ## 🔍 v0.13.6 — Send to TV diagnostics
 
 - The TV's receive screen now shows how many requests reached it and lists all of the TV's

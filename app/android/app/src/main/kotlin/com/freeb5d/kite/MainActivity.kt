@@ -91,7 +91,7 @@ class MainActivity : FlutterActivity() {
             "parseLink" -> background(result) { Kitecore.parseLink(call.arguments as String) }
             "fetchSubscription" -> background(result) { Kitecore.fetchSubscription(call.arguments as String) }
             "shareLink" -> background(result) { Kitecore.shareLink(call.arguments as String) }
-            "traffic" -> result.success(Kitecore.traffic())
+            "traffic" -> background(result) { Kitecore.traffic() }
             "lastStop" -> {
                 // Why the last connection ended on its own ("time|reason"), once.
                 val prefs = getSharedPreferences("kite_service", MODE_PRIVATE)
