@@ -1,5 +1,10 @@
 # Changelog
 
+## 🔍 v0.13.8 — Visible errors
+
+- If part of the screen fails to draw, Kite now shows the error message there instead of a
+  blank area, so it can be reported.
+
 ## 🐛 v0.13.7 — No more blank screen
 
 - Fixed the app opening to a blank screen (seen on Android TV): starting or stopping the

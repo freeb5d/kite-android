@@ -20,6 +20,21 @@ const repoUrl = 'https://github.com/freeb5d/kite-android';
 
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
+  // In release builds a widget that fails to build shows as a blank area.
+  // Show the error itself instead, so a problem can be reported from a photo.
+  ErrorWidget.builder = (details) => Material(
+        color: const Color(0xFFFFF3F3),
+        child: SingleChildScrollView(
+          padding: const EdgeInsets.all(24),
+          child: Text(
+            'Kite error:
+${details.exceptionAsString()}
+
+${details.stack ?? ''}'.trim(),
+            style: const TextStyle(color: Color(0xFFB00020), fontSize: 14),
+          ),
+        ),
+      );
   await Store.init();
   runApp(const KiteApp());
 }
