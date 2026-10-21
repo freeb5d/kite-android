@@ -1,5 +1,11 @@
 # Changelog
 
+## 🔒 v0.15.0 — Stable build
+
+- Same app as v0.13.5, now built with the exact Flutter and storage-package versions that
+  v0.13.5 used. Newer versions had slipped into later builds and left the app on a blank
+  screen on some Android TVs.
+
 ## ↩️ v0.14.0 — Back to v0.13.5
 
 - Returns the app to exactly the v0.13.5 code, after later versions opened to a blank screen

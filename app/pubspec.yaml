@@ -14,6 +14,10 @@ dependencies:
   mobile_scanner: ^7.0.0
   qr_flutter: ^4.1.0
 
+# 2.5.0 left the app on a blank screen at startup on Android TV.
+dependency_overrides:
+  shared_preferences_android: 2.4.28
+
 dev_dependencies:
   flutter_test:
     sdk: flutter
