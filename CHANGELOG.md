@@ -1,5 +1,11 @@
 # Changelog
 
+## 🔌 v0.15.1 — Lighter logging
+
+- The connection log now only records warnings and errors. Before, every connection was
+  written to it — with video apps retrying blocked QUIC several times a second, that grew to
+  tens of megabytes over a few hours of streaming, a likely reason Android TV stopped Kite.
+
 ## 🔒 v0.15.0 — Stable build
 
 - Same app as v0.13.5, now built with the exact Flutter and storage-package versions that

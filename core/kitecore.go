@@ -194,6 +194,10 @@ func Start(serverJSON string, tunFd int, logPath string) error {
 		SOCKSPort: SOCKSPort,
 		TUN:       tunFd >= 0,
 		LogPath:   logPath,
+		// Not "debug": with QUIC blocked, video apps retry it several times
+		// a second and every attempt was logged -- tens of MB over hours of
+		// streaming, constantly written on devices (TVs) with little to spare.
+		LogLevel: "warning",
 		// Kite is excluded from its own VPN, so direct sockets bypass it.
 		DirectPrivate: true,
 	}
