@@ -1,5 +1,12 @@
 # Changelog
 
+## 🐛 v0.15.2 — Crash fix: no more random disconnects
+
+- Fixed Kite crashing (and so disconnecting) after minutes or hours, especially on Android
+  TV while streaming. The cause was a bug in xray-core's UDP handling ("send on closed
+  channel"), hit often once QUIC got blocked, as video apps retry it several times a second.
+  Kite now ships xray-core with that bug fixed.
+
 ## 🔌 v0.15.1 — Lighter logging
 
 - The connection log now only records warnings and errors. Before, every connection was
