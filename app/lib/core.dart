@@ -28,6 +28,19 @@ class Core {
 
   static Future<void> disconnect() => _ch.invokeMethod('disconnect');
 
+  /// Launchable apps: [{pkg, name, icon (PNG bytes)}].
+  static Future<List<Map<String, dynamic>>> apps() async =>
+      ((await _ch.invokeMethod<List>('apps')) ?? []).map((e) => Map<String, dynamic>.from(e as Map)).toList();
+
+  /// Per-app VPN setting: mode is all | only | except.
+  static Future<({String mode, List<String> apps})> getSplit() async {
+    final m = Map<String, dynamic>.from(await _ch.invokeMethod<Map>('getSplit') ?? {});
+    return (mode: '${m['mode'] ?? 'all'}', apps: List<String>.from(m['apps'] ?? const []));
+  }
+
+  static Future<void> setSplit(String mode, List<String> apps) =>
+      _ch.invokeMethod('setSplit', {'mode': mode, 'apps': apps});
+
   /// Why the last connection ended without the user asking ("ms|reason"), or
   /// null. Reading it clears it.
   static Future<String?> lastStop() => _ch.invokeMethod<String>('lastStop');

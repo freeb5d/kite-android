@@ -1,5 +1,10 @@
 # Changelog
 
+## 📱 v0.16.0 — Per-app VPN
+
+- **Choose which apps use the VPN** (new apps button in the top bar): all apps, only the
+  apps you pick, or all apps except the ones you pick. Applies from the next connection.
+
 ## 🐛 v0.15.2 — Crash fix: no more random disconnects
 
 - Fixed Kite crashing (and so disconnecting) after minutes or hours, especially on Android

@@ -6,6 +6,7 @@ import 'package:flutter/services.dart';
 import 'package:http/http.dart' as http;
 
 import 'about.dart';
+import 'apps_page.dart';
 import 'core.dart';
 import 'editor.dart';
 import 'i18n.dart';
@@ -1006,6 +1007,11 @@ class _HomePageState extends State<HomePage> {
             IconButton(tooltip: t('importClipboard'), icon: const Icon(Icons.content_paste), onPressed: _importClipboard),
             if (info['isTv'] == true)
               IconButton(tooltip: t('receiveFromPhone'), icon: const Icon(Icons.qr_code_2), onPressed: _receiveFromPhone),
+            IconButton(
+              tooltip: t('perAppVpn'),
+              icon: const Icon(Icons.apps),
+              onPressed: () => Navigator.of(context).push(MaterialPageRoute(builder: (_) => AppsPage(t: t))),
+            ),
             IconButton(tooltip: t('showLog'), icon: const Icon(Icons.terminal), onPressed: _showLog),
             IconButton(tooltip: t('language'), icon: const Icon(Icons.translate), onPressed: _pickLanguage),
             IconButton(

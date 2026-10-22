@@ -71,6 +71,9 @@
     </application>
     <queries>
         <intent>
+            <action android:name="android.intent.action.MAIN" />
+        </intent>
+        <intent>
             <action android:name="android.intent.action.PROCESS_TEXT"/>
             <data android:mimeType="text/plain"/>
         </intent>

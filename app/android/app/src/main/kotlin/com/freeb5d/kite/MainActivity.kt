@@ -74,6 +74,31 @@ class MainActivity : FlutterActivity() {
         })
     }
 
+    /** Apps with a launcher icon (phone or TV), for the per-app VPN list. */
+    private fun launchableApps(): List<Map<String, Any?>> {
+        val pm = packageManager
+        val seen = HashMap<String, Map<String, Any?>>()
+        for (cat in listOf(Intent.CATEGORY_LAUNCHER, Intent.CATEGORY_LEANBACK_LAUNCHER)) {
+            val intent = Intent(Intent.ACTION_MAIN).addCategory(cat)
+            for (ri in pm.queryIntentActivities(intent, 0)) {
+                val pkg = ri.activityInfo.packageName
+                if (pkg == packageName || seen.containsKey(pkg)) continue
+                val icon = try {
+                    val d = ri.loadIcon(pm)
+                    val bmp = android.graphics.Bitmap.createBitmap(72, 72, android.graphics.Bitmap.Config.ARGB_8888)
+                    val c = android.graphics.Canvas(bmp)
+                    d.setBounds(0, 0, 72, 72)
+                    d.draw(c)
+                    val out = java.io.ByteArrayOutputStream()
+                    bmp.compress(android.graphics.Bitmap.CompressFormat.PNG, 100, out)
+                    out.toByteArray()
+                } catch (_: Exception) { null }
+                seen[pkg] = mapOf("pkg" to pkg, "name" to ri.loadLabel(pm).toString(), "icon" to icon)
+            }
+        }
+        return seen.values.sortedBy { (it["name"] as String).lowercase() }
+    }
+
     /** Runs [block] off the main thread and replies with its result or error. */
     private fun background(result: MethodChannel.Result, block: () -> Any?) {
         io.execute {
@@ -132,6 +157,23 @@ class MainActivity : FlutterActivity() {
             }
             "disconnect" -> {
                 startService(Intent(this, KiteVpnService::class.java).setAction(KiteVpnService.ACTION_STOP))
+                result.success(null)
+            }
+            "apps" -> background(result) { launchableApps() }
+            "getSplit" -> {
+                val prefs = getSharedPreferences("kite_service", MODE_PRIVATE)
+                result.success(mapOf(
+                    "mode" to (prefs.getString("splitMode", "all") ?: "all"),
+                    "apps" to (prefs.getString("splitApps", "") ?: "").split("\n").filter { it.isNotEmpty() },
+                ))
+            }
+            "setSplit" -> {
+                @Suppress("UNCHECKED_CAST")
+                val apps = (call.argument<List<String>>("apps") ?: emptyList())
+                getSharedPreferences("kite_service", MODE_PRIVATE).edit()
+                    .putString("splitMode", call.argument<String>("mode") ?: "all")
+                    .putString("splitApps", apps.joinToString("\n"))
+                    .apply()
                 result.success(null)
             }
             "openVpnSettings" -> {

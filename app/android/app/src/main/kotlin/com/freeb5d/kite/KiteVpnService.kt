@@ -150,7 +150,7 @@ class KiteVpnService : VpnService() {
                 log.writeText("")
                 var fd = -1L
                 if (mode == "vpn") {
-                    val pfd = Builder()
+                    val builder = Builder()
                         .setSession("Kite")
                         .setMtu(1500)
                         .addAddress("10.19.0.1", 30)
@@ -158,10 +158,28 @@ class KiteVpnService : VpnService() {
                         .addAddress("fd66:19::1", 126)
                         .addRoute("::", 0)
                         .addDnsServer("1.1.1.1")
-                        // Kite's own traffic (xray's connection to the server,
-                        // its DNS lookups) must not loop back into the tunnel.
-                        .addDisallowedApplication(packageName)
-                        .establish() ?: throw IllegalStateException("VPN permission was revoked")
+                    // Per-app VPN. Android allows either an allow-list or a
+                    // block-list, not both. Kite's own traffic (xray's link to
+                    // the server) must never enter the tunnel: excluded in the
+                    // block-list modes, and simply not listed in "only".
+                    val prefs = getSharedPreferences("kite_service", MODE_PRIVATE)
+                    val splitMode = prefs.getString("splitMode", "all") ?: "all"
+                    val splitApps = (prefs.getString("splitApps", "") ?: "").split("\n").filter { it.isNotEmpty() && it != packageName }
+                    var allowed = 0
+                    if (splitMode == "only") {
+                        for (app in splitApps) {
+                            try { builder.addAllowedApplication(app); allowed++ } catch (_: Exception) {}
+                        }
+                    }
+                    if (allowed == 0) {
+                        builder.addDisallowedApplication(packageName)
+                        if (splitMode == "except") {
+                            for (app in splitApps) {
+                                try { builder.addDisallowedApplication(app) } catch (_: Exception) {}
+                            }
+                        }
+                    }
+                    val pfd = builder.establish() ?: throw IllegalStateException("VPN permission was revoked")
                     // The Go core owns the fd from here and releases it on stop;
                     // closing it here too could free a number that xray-core
                     // still writes packets to (e.g. into the next log file).
