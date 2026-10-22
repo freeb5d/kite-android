@@ -1,5 +1,14 @@
 # Changelog
 
+## 🗂️ v0.17.0 — XDrive and JSON configs
+
+- **XDrive transport** — Kite's xray-core now includes XDrive (traffic relayed through a
+  cloud drive such as Google Drive), taken from the newer upstream xray-core. Kite keeps the
+  version that still accepts VLESS/Trojan without TLS.
+- **Paste a JSON config** — an Xray JSON config can be pasted into the add box or imported
+  from the clipboard. Outbounds using transports Kite doesn't edit itself, like XDrive, are
+  kept exactly as given; both xray's own layout and the panel layout (`tuning`, `front`) work.
+
 ## 📱 v0.16.0 — Per-app VPN
 
 - **Choose which apps use the VPN** (new apps button in the top bar): all apps, only the

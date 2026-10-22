@@ -290,7 +290,10 @@ class _HomePageState extends State<HomePage> {
         return added.length;
       }
       // Several links pasted at once: add each one.
-      final lines = value.split(RegExp(r'\s+')).where((l) => l.contains('://')).toList();
+      // A pasted Xray JSON config (e.g. XDrive, which has no share link).
+      final lines = value.trimLeft().startsWith(RegExp(r'[{\[]'))
+          ? [value]
+          : value.split(RegExp(r'\s+')).where((l) => l.contains('://')).toList();
       Server? last;
       for (final line in lines) {
         final s = await Core.parseLink(line);
@@ -316,7 +319,7 @@ class _HomePageState extends State<HomePage> {
       _flash(t('clipboardEmpty'));
       return;
     }
-    if (!RegExp(r'^https?://', caseSensitive: false).hasMatch(text) && !text.contains('://')) {
+    if (!RegExp(r'^https?://', caseSensitive: false).hasMatch(text) && !text.contains('://') && !text.startsWith('{')) {
       _flash(t('clipboardNoLinks'));
       return;
     }
