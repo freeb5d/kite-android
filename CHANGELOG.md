@@ -1,5 +1,11 @@
 # Changelog
 
+## 🐛 v0.17.1 — YouTube and other apps failing over IPv6
+
+- Kite's DNS now answers with IPv4 addresses only. Most servers have no IPv6, so apps that
+  prefer it (YouTube on Android TV, Google apps) couldn't connect even though the VPN and the
+  connection test worked.
+
 ## 🗂️ v0.17.0 — XDrive and JSON configs
 
 - **XDrive transport** — Kite's xray-core now includes XDrive (traffic relayed through a

@@ -4,7 +4,7 @@ go 1.27
 
 // Shared link parser and xray config builder. Pinned to an exact desktop
 // release: "@main" can resolve to a stale commit through the Go module proxy.
-require github.com/freeb5d/kite v0.26.0
+require github.com/freeb5d/kite v0.26.1
 
 // v1.260327.0 with a crash fix in its TUN UDP handler (see udp_fullcone.go).
 // Newer upstream releases have the fix but reject VLESS/Trojan without TLS.
