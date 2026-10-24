@@ -1,5 +1,11 @@
 # Changelog
 
+## 🐛 v0.17.2 — YouTube on Android TV, for real
+
+- The VPN now carries IPv4 only. Android's Private DNS (on by default) bypassed Kite's
+  IPv4-only DNS answers, so YouTube and Google apps kept trying IPv6, which most servers
+  don't support, and failed to connect.
+
 ## 🐛 v0.17.1 — YouTube and other apps failing over IPv6
 
 - Kite's DNS now answers with IPv4 addresses only. Most servers have no IPv6, so apps that

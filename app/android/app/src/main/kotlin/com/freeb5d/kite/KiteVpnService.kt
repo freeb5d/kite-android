@@ -155,8 +155,10 @@ class KiteVpnService : VpnService() {
                         .setMtu(1500)
                         .addAddress("10.19.0.1", 30)
                         .addRoute("0.0.0.0", 0)
-                        .addAddress("fd66:19::1", 126)
-                        .addRoute("::", 0)
+                        // IPv4 only: most servers have no IPv6, and apps that
+                        // prefer it (YouTube, Google) failed their handshakes
+                        // -- even with IPv4-only DNS answers, since Android's
+                        // Private DNS bypasses the tunnel's DNS.
                         .addDnsServer("1.1.1.1")
                     // Per-app VPN. Android allows either an allow-list or a
                     // block-list, not both. Kite's own traffic (xray's link to
