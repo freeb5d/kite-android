@@ -6,6 +6,7 @@ import 'package:flutter/services.dart';
 import 'package:http/http.dart' as http;
 
 import 'about.dart';
+import 'package:qr_flutter/qr_flutter.dart';
 import 'apps_page.dart';
 import 'core.dart';
 import 'editor.dart';
@@ -481,6 +482,43 @@ class _HomePageState extends State<HomePage> {
     } catch (e) {
       setState(() => error = _err(e));
     }
+  }
+
+  /// Shows [text] (a share link or subscription URL) as a QR code, so
+  /// another device can import it by scanning.
+  void _showQr(String title, String text) {
+    final ok = QrValidator.validate(data: text).status == QrValidationStatus.valid;
+    showDialog<void>(
+      context: context,
+      builder: (ctx) => AlertDialog(
+        title: Text(title, maxLines: 1, overflow: TextOverflow.ellipsis),
+        content: SizedBox(
+          width: 300,
+          child: Column(mainAxisSize: MainAxisSize.min, children: [
+            if (ok)
+              Container(
+                color: Colors.white,
+                padding: const EdgeInsets.all(8),
+                child: QrImageView(data: text, size: 260, backgroundColor: Colors.white),
+              )
+            else
+              Text(t('qrTooLong'), style: TextStyle(color: Theme.of(ctx).colorScheme.error)),
+            const SizedBox(height: 8),
+            Text(t('qrHint'), style: Theme.of(ctx).textTheme.bodySmall, textAlign: TextAlign.center),
+          ]),
+        ),
+        actions: [
+          TextButton(
+            onPressed: () {
+              Clipboard.setData(ClipboardData(text: text));
+              _flash(t('linkCopied'));
+            },
+            child: Text(t('copyLog')),
+          ),
+          FilledButton(autofocus: true, onPressed: () => Navigator.pop(ctx), child: Text(t('close'))),
+        ],
+      ),
+    );
   }
 
   Future<void> _shareServer(Server s) async {
@@ -1082,12 +1120,14 @@ class _HomePageState extends State<HomePage> {
           PopupMenuButton<String>(
             onSelected: (v) {
               if (v == 'share') _shareServer(s);
+              if (v == 'qr') Core.shareLink(s).then((l) => _showQr('${s['name']}', l));
               if (v == 'tv') _sendToTv(() => Core.shareLink(s));
               if (v == 'rename') _editServer(s);
               if (v == 'delete') _deleteServer(s);
             },
             itemBuilder: (_) => [
               PopupMenuItem(value: 'share', child: Text(t('shareLink'))),
+              PopupMenuItem(value: 'qr', child: Text(t('showQr'))),
               if (info['isTv'] != true) PopupMenuItem(value: 'tv', child: Text(t('sendToTv'))),
               PopupMenuItem(value: 'rename', child: Text(t('editServer'))),
               PopupMenuItem(value: 'delete', child: Text(t('remove'))),
@@ -1145,6 +1185,7 @@ class _HomePageState extends State<HomePage> {
                   if (v == 'ping') _ping(g.servers);
                   if (v == 'url') _shareGroup(g, true);
                   if (v == 'links') _shareGroup(g, false);
+                  if (v == 'qr') _showQr(g.name, g.url);
                   if (v == 'tv') _sendToTv(() => _groupLinks(g));
                   if (v == 'edit') _editGroup(g);
                   if (v == 'delete') _deleteGroup(g);
@@ -1153,6 +1194,7 @@ class _HomePageState extends State<HomePage> {
                   PopupMenuItem(value: 'ping', enabled: !pinging, child: Text(t('pingGroup'))),
                   PopupMenuItem(value: 'url', child: Text(t('copySubscriptionUrl'))),
                   PopupMenuItem(value: 'links', child: Text(t('copyAllServerLinks'))),
+                  if (g.url.isNotEmpty) PopupMenuItem(value: 'qr', child: Text(t('showQr'))),
                   if (info['isTv'] != true) PopupMenuItem(value: 'tv', child: Text(t('sendToTv'))),
                   PopupMenuItem(value: 'edit', child: Text(t('edit'))),
                   PopupMenuItem(value: 'delete', child: Text(t('remove'))),

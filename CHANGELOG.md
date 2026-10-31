@@ -1,5 +1,10 @@
 # Changelog
 
+## 🔳 v0.18.0 — QR codes for sharing
+
+- **Show QR code** in the menu of every server and subscription, so another phone or TV can
+  import it by scanning.
+
 ## 🐛 v0.17.2 — YouTube on Android TV, for real
 
 - The VPN now carries IPv4 only. Android's Private DNS (on by default) bypassed Kite's

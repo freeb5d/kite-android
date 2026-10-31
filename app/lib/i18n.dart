@@ -14,6 +14,9 @@ const languages = <(String, String)>[
 
 const Map<String, Map<String, String>> _strings = {
   "en": {
+    "showQr": "Show QR code",
+    "qrHint": "Scan with another device to import.",
+    "qrTooLong": "Too long for a QR code — copy the link instead.",
     "perAppVpn": "Per-app VPN",
     "allApps": "All apps",
     "onlySelected": "Only selected",
@@ -189,6 +192,9 @@ const Map<String, Map<String, String>> _strings = {
     "skippedEntries": "Imported {0} servers ({1} unsupported entries skipped).",
   },
   "zh": {
+    "showQr": "显示二维码",
+    "qrHint": "用另一台设备扫描即可导入。",
+    "qrTooLong": "内容太长，无法生成二维码——请改为复制链接。",
     "perAppVpn": "分应用代理",
     "allApps": "所有应用",
     "onlySelected": "仅选中的",
@@ -364,6 +370,9 @@ const Map<String, Map<String, String>> _strings = {
     "skippedEntries": "已导入 {0} 个服务器（跳过 {1} 个不支持的条目）。",
   },
   "fa": {
+    "showQr": "نمایش کد QR",
+    "qrHint": "با یک دستگاه دیگر اسکن کنید تا اضافه شود.",
+    "qrTooLong": "برای کد QR خیلی طولانی است — لینک را کپی کنید.",
     "perAppVpn": "وی‌پی‌ان برای هر برنامه",
     "allApps": "همهٔ برنامه‌ها",
     "onlySelected": "فقط انتخاب‌شده‌ها",
@@ -539,6 +548,9 @@ const Map<String, Map<String, String>> _strings = {
     "skippedEntries": "{0} سرور وارد شد ({1} مورد پشتیبانی‌نشده رد شد).",
   },
   "tr": {
+    "showQr": "QR kodunu göster",
+    "qrHint": "İçe aktarmak için başka bir cihazla tarayın.",
+    "qrTooLong": "QR kod için çok uzun — bunun yerine bağlantıyı kopyalayın.",
     "perAppVpn": "Uygulama bazlı VPN",
     "allApps": "Tüm uygulamalar",
     "onlySelected": "Yalnızca seçilenler",
@@ -714,6 +726,9 @@ const Map<String, Map<String, String>> _strings = {
     "skippedEntries": "{0} sunucu içe aktarıldı ({1} desteklenmeyen girdi atlandı).",
   },
   "ar": {
+    "showQr": "عرض رمز QR",
+    "qrHint": "امسحه بجهاز آخر لاستيراده.",
+    "qrTooLong": "طويل جدًا لرمز QR — انسخ الرابط بدلًا من ذلك.",
     "perAppVpn": "VPN لكل تطبيق",
     "allApps": "كل التطبيقات",
     "onlySelected": "المحددة فقط",
@@ -889,6 +904,9 @@ const Map<String, Map<String, String>> _strings = {
     "skippedEntries": "تم استيراد {0} خوادم (تم تخطي {1} إدخالات غير مدعومة).",
   },
   "fr": {
+    "showQr": "Afficher le QR code",
+    "qrHint": "Scannez-le avec un autre appareil pour l’importer.",
+    "qrTooLong": "Trop long pour un QR code — copiez plutôt le lien.",
     "perAppVpn": "VPN par application",
     "allApps": "Toutes les apps",
     "onlySelected": "Seulement la sélection",
@@ -1064,6 +1082,9 @@ const Map<String, Map<String, String>> _strings = {
     "skippedEntries": "{0} serveurs importés ({1} entrées non prises en charge ignorées).",
   },
   "de": {
+    "showQr": "QR-Code anzeigen",
+    "qrHint": "Mit einem anderen Gerät scannen, um zu importieren.",
+    "qrTooLong": "Zu lang für einen QR-Code – kopiere stattdessen den Link.",
     "perAppVpn": "VPN pro App",
     "allApps": "Alle Apps",
     "onlySelected": "Nur ausgewählte",
@@ -1239,6 +1260,9 @@ const Map<String, Map<String, String>> _strings = {
     "skippedEntries": "{0} Server importiert ({1} nicht unterstützte Einträge übersprungen).",
   },
   "ru": {
+    "showQr": "Показать QR-код",
+    "qrHint": "Отсканируйте другим устройством, чтобы импортировать.",
+    "qrTooLong": "Слишком длинно для QR-кода — скопируйте ссылку.",
     "perAppVpn": "VPN для отдельных приложений",
     "allApps": "Все приложения",
     "onlySelected": "Только выбранные",
